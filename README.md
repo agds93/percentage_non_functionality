@@ -4,13 +4,13 @@ Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, 
 ## Selezione di una patch
 Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D.
 <figure class="image">
-  <img src="/media/18/Patch_Point5000.png" width=600px class="center">
+  <img src="img/Patch_Point5000.png" width=600px class="center">
   <center><figcaption><i>Figura 1</i>: Una possibile patch della superficie.</figcaption></center>
 </figure>
 Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto dell'intera superficie `center` e un raggio `Rs`.  
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2.
 <figure class="image">
-  <img src="/media/18/Cone_Point5000.png" width=600px class="center">
+  <img src="img/Cone_Point5000.png" width=600px class="center">
   <center><figcaption><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).</figcaption></center>
 </figure>
 Tale cono è posto lungo l'asse z, con origine nel punto $C$=$(0,0,$ `z`$)$, in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette $C$ a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.  
@@ -32,12 +32,12 @@ Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npix
 Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).
 
 <figure class="image">
-  <img src="/media/18/Point_5000_Weigths.png" width=600px class="center">
-	<img src="/media/18/Point_19841_Projections.png" width=600px class="center">
+  <img src="img/Point_5000_Weigths.png" width=600px class="center">
+  <img src="img/Point_19841_Projections.png" width=600px class="center">
   <center><figcaption><i>Figura 3</i>: Media e varianza di due diverse patch prodotte con il primo metodo.</figcaption></center>
 </figure>
 <figure class="image">
-  <img src="/media/18/Point_5000_Weigths.png" width=600px class="center">
-	<img src="/media/18/Point_19841_Projections.png" width=600px class="center">
+  <img src="img/Point_5000_Weigths.png" width=600px class="center">
+  <img src="img/Point_19841_Projections.png" width=600px class="center">
   <center><figcaption><i>Figura 4</i>: Media e varianza di due diverse patch prodotte con il secondo metodo.</figcaption></center>
 </figure>
