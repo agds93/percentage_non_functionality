@@ -1,3 +1,6 @@
+**Autori**: Alessandro Giudice, Samuel Santhosh Gomez  
+
+# Percentuale di non funzionalità di una patch
 Di seguito riporto la procedura per calcolare la percentuale di non funzionalità di una specifica zona di una superficie proteica in 3D.  
 Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, visibile in appendice.   
 
@@ -12,11 +15,10 @@ Tali punti sono selezionati come punti della patch se essi hanno una distanza re
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2.
 <figure class="image">
   <img src="img/Cone_Point5000.png" width=600px class="center">
-  <center><figcaption><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).  </figcaption></center>
+  <center><figcaption><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).</figcaption></center>
 </figure>
 
 Tale cono è posto lungo l'asse z, con origine nel punto $C$=$(0,0,$ `z`$)$, in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette $C$ a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.  
-
 
 Come anticipato sopra, un piano di fit per sarà rappresentato da una matrice quadrata 2D di lato `Npixel`. Le matrici, cioè i piani di fit, producibili sono due:
 
