@@ -46,7 +46,7 @@ Invece nel secondo metodo il piano viene costruito in modo che ogni pixel raccol
 <p align="center"><i>Figura 4</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il secondo metodo.</p>
 
 ## Percentuale di non funzionalità
-La percentuale di non funzionalità di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore di tale soglia è indicato sulla barra colorata del grafico a destra delle Figure 3-4. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4).
+La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4).
 
 ## Appendice
 ### Librerie
@@ -127,10 +127,17 @@ Per trovare la quota `z` dell'origine C del cono che ingloba la patch si usa
 ```python
 z = surf_a_obj.FindOrigin(rot_patch, 0)
 ```
-dove se si sostituisce `0` con `1` si produce il grafico dellapatch inglobata dentro il cono. La Figura 2 si ottiene con `center = 5000`.
+dove se si sostituisce `0` con `1` si produce il grafico della patch inglobata dentro il cono. La Figura 2 si ottiene con `center = 5000`.
 
 ### Creazione del piano di fit
-Per creare il piano della media e delle varianza con il primo metodo si utilizza la funzione
+Per creare la matrice della media `plane` e delle varianza `plane_var` con il primo metodo si utilizza la funzione seguente. L'input è formato da:
+* una label che determina se restituire la matrice di media e/o la varianza:
+    * "mean" restituisce solo i valori medi
+    * "var" produce solo le varianze
+    * "" o altro fornisce valori medi e varianze
+* la patch ruotata.
+* la quota `z` del punto C.
+* il numero di pixel per lato della griglia `Npixel`.
 ```python
 def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
 
@@ -194,8 +201,8 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
         return plane_var, weigths, dist_plane, thetas
     else :
         return plane, plane_var, weigths, dist_plane, thetas
-```
-Invece con il secondo metodo si usa la funzione
+``` 
+Invece per creare la matrice della media `plane` e delle varianza `plane_var` con il secondo metodo si utilizza la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo.
 ```python
  def CreatePlane_Projections(label, patch, z_c, Np = 20) :
     
@@ -239,7 +246,7 @@ Invece con il secondo metodo si usa la funzione
 
     pos_plane = rot_p[:,:2]
     
-    # prendere soloi valori nel disco unitario
+    # prendere solo i valori nel disco unitario
 
     dR = 2.*R/Np
     rr_x = 0
@@ -269,7 +276,17 @@ Invece con il secondo metodo si usa la funzione
         return plane, plane_var, weigths, dist_plane, thetas
 ```
 ### Percentuale di non funzionalità
-Per calcolare la percentuale di varianze più alte di una certa soglia con il primo metodo si usa
+Per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il primo metodo si usa la funzione seguente. L'input è formato da:
+* una label che determina se restituire la matrice di media e/o la varianza:
+    * "mean" restituisce solo i valori medi
+    * "var" produce solo le varianze
+    * "" o altro fornisce valori medi e varianze
+* il numero di pixel per lato della griglia `Npixel`.
+* l'oggetto superficie `surf_a_obj`.
+* l'indice `center` del punto della superficie scelto come centro della patch.
+* la distanza `Dpp` tra i punti della patch.
+* la soglia `threshold` scelta.
+
 ```python
 def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
@@ -309,7 +326,7 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
     else :
         return plane, plane_var, perc
 ```
- Invece con il secondo metodo si usa la funzione
+ Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo,infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
