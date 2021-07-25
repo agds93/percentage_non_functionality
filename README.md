@@ -1,4 +1,5 @@
-**Autori**: Alessandro Giudice, Samuel Santhosh Gomez  
+**Autore**: Alessandro Giudice    
+**Collaboratore**: Samuel Santhosh Gomez  
 
 # Percentuale di non funzionalità di una patch
 Di seguito riporto la procedura per calcolare la percentuale di non funzionalità di una specifica zona di una superficie proteica in 3D.  
@@ -77,8 +78,9 @@ I valori dei parametri usati per selezionare e fittare una patch sono
 Npixel = 25    # il lato del piano in pixel
 Dpp = 0.5      # la distanza tra i punti della stessa patch
 Rs = 6         # il raggio della sfera che include la patch
-threshold = 5  # valore soglia per stabilire se la varianza è alta (in ångström)
+threshold = 5  # valore soglia per stabilire se la varianza è alta
 ```
+I valori sono in ångström, tranne `Npixel`.
 L'indice del punto centrale della patch usato per Figura 1, Figura 2, e per i grafici nella parte alta della Figura 3-4 è
 ```python
 center = 5000
@@ -116,12 +118,12 @@ Per produrre il grafico in Figura 1, con `center = 5000`, si usa:
 res1, c = SF.ConcatenateFigPlots([patch[:,:3]])
 SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
 ```
-Per essere utilizzabile, la patch deve essere ruotata (`patch` diventa `rot_patch`) in modo che sia perpendicolare al piano $xy$. Questo si può fare con
+Per essere utilizzabile, la patch deve essere ruotata (`patch` diventa `rot_patch`) in modo che sia perpendicolare al piano xy. Questo si può fare con
 ```python 
 rot_patch, rot_patch_nv = surf_a_obj.PatchReorientNew(patch, +1)
 ```
 dove il parametro `+1` indica che i versori normali `rot_patch_nv` sono rivolti verso l'alto.  
-Per trovare la quota `z` dell'origine $C$ del cono che ingloba la patch si usa
+Per trovare la quota `z` dell'origine C del cono che ingloba la patch si usa
 ```python
 z = surf_a_obj.FindOrigin(rot_patch, 0)
 ```
@@ -134,22 +136,22 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
 
     rot_p = np.copy(patch)
 
-    # shifting patch to have the cone origin in [0,0,0]
+    # spostare la patch per avere l'origine del cono in [0,0,0]
     rot_p[:,2] -= z_c
 
-    # computing distances between points and the origin
+    # calcolare le distanze tra i punti e l'origine
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + rot_p[:,2]**2)
     
-    # computing angles on plane
+    # calcolare gli angoli sul piano
     thetas = np.arctan2(rot_p[:,1], rot_p[:,0])
 
-    # computing distances in plane
+    # calcolare le distanze sul piano
     dist_plane = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2)
 
-    # computing the circle radius as the maximum distant point
+    # calcolare il raggio del cerchio come punto di massima distanza
     R = np.amax(dist_plane)*1.01
 
-    # creating plane matrix
+    # creare le matrici
     if label == "mean" :
         plane = np.zeros((Np,Np))
     elif label == "var" :
@@ -158,13 +160,13 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
         plane = np.zeros((Np,Np))
         plane_var = np.zeros((Np,Np))
     
-    # adapting points to pixels
+    # adattare i punti ai pixel
     rot_p[:,0] += R
     rot_p[:,1] -= R
 
     pos_plane = rot_p[:,:2]
     
-    # taking values only within unit disk
+    # prendere solo i valori nel disco unitario
 
     dR = 2.*R/Np
     rr_x = 0
@@ -199,30 +201,30 @@ Invece con il secondo metodo si usa la funzione
     
     rot_p = np.copy(patch)
      
-    # computing distances between points and the origin of cone in [0,0,z_c]
+    # calcolare le distanze tra i punti e l'origine in [0,0,z_c]
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + (rot_p[:,2]-z_c)**2)
     
-    # angles of slope, respect to the fit plane, of segments that connect a surface point and the origin of cone
+    # calcolare l'angolo di pendenza, rispetto al piano di fit del segmento che connette ogni punto all'origine
     slope_angle = np.arcsin( (rot_p[:,2]-z_c) / weigths[:] )
     
-    # shift from original xy coordinates to intersection coordinates of segments with fit plane
-    # shift values are positive if rot_p[:,2] > 0 or negative if rot_p[:,2] < 0  
+    # spostamento delle coordinate xy originali original xy coordinates per intersecare le coordiante del segmento con il piano di fit
+    # i valori sono positivi se rot_p[:,2] > 0 oppure negativi se rot_p[:,2] < 0  
     shift = (rot_p[:,2]) / np.tan(slope_angle)
     
-    # computing distances in plane
+    # calcolare le distanze sul piano
     dist_plane = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2) + shift
     
-    # computing the circle radius as the maximum distant point
+    # calcolare il raggio del cerchio come punto di massima distanza
     R = np.amax(dist_plane)*1.01
     
-    # computing angles on plane (slope of shift segments on fit plane)
+    # calcolare gli angoli sul piano (pendenza dei segmenti spostati sul piano di fit)
     thetas = np.arctan2(rot_p[:,1], rot_p[:,0])
     
-    # new coordinates of points on fit plane
+    # nuove coordiante dei punti sul piano di fit
     rot_p[:,0] += shift[:]*np.cos(thetas[:])
     rot_p[:,1] += shift[:]*np.sin(thetas[:])
 
-    # creating plane matrix
+    # creare le matrici
     if label == "mean" :
         plane = np.zeros((Np,Np))
     elif label == "var" :
@@ -231,13 +233,13 @@ Invece con il secondo metodo si usa la funzione
         plane = np.zeros((Np,Np))
         plane_var = np.zeros((Np,Np))
     
-    # adapting points to pixels
+    # adattare i punti ai pixel
     rot_p[:,0] += R
     rot_p[:,1] -= R
 
     pos_plane = rot_p[:,:2]
     
-    # taking values only within unit disk
+    # prendere soloi valori nel disco unitario
 
     dR = 2.*R/Np
     rr_x = 0
@@ -274,7 +276,6 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
     rot_patch, _ = surf_a_obj.PatchReorientNew(patch, 1)
     
-    ## To project the patch on the xy plane...
     z = surf_a_obj.FindOrigin(rot_patch)
     
     # Per ottenere il piano delle varianze (rispettivamente senza o con il piano delle medie)
@@ -315,10 +316,9 @@ def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, thres
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
     rot_patch, _ = surf_a_obj.PatchReorientNew(patch, 1)
     
-    ## To project the patch on the xy plane...
     z = surf_a_obj.FindOrigin(rot_patch)
     
-     # Per ottenere il piano delle varianze (rispettivamente senza o con il piano delle medie)
+    # Per ottenere il piano delle varianze (rispettivamente senza o con il piano delle medie)
     if label == "var" :
         plane_var, _, _, _ = CreatePlane_Projections("var", patch=rot_patch, z_c=z , Np=Npixel)
     else :
