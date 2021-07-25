@@ -46,10 +46,12 @@ Invece nel secondo metodo il piano viene costruito in modo che ogni pixel raccol
 <p align="center"><i>Figura 4</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il secondo metodo.</p>
 
 ## Percentuale di non funzionalità
-La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4). I valori della percentuale per ogni punto della superficie sono visibili in Figura 5. 
+La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4). I valori della percentuale per ogni punto della superficie sono visibili in Figura 5.
+<p align="center"><img src="img/all_perc.png" width=800px></p>
+<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità per ogni punto della superficie.</p>
 
 ## Appendice
-### Librerie
+### Librerie e moduli
 Il codice scritto è stato eseguito con <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> utilizzando almeno `python 3.8.10`.  
 I moduli python usati, compreso `jupyterlab`, che sono stati installati tramite 
 <a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a>, sono elencati sotto.
@@ -63,7 +65,7 @@ import pandas as pd
 ```python
 from mayavi import mlab
 ```
-in particolare `mlab` è necessario per visualizzare le superfici 3D tramite una finestra Qt, così da produrre le Figure 1-2.     
+in particolare `mlab` è necessario per visualizzare le superfici 3D tramite una finestra Qt, così da produrre la Figura 1-2.     
 Mentre le librerie di base sono
 ```python
 sys.path.append("./bin/")
@@ -366,6 +368,29 @@ def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, thres
     else :
         return plane, plane_var, perc
 ```
+Per calcolare la `perc` di ogni punto della superficie si usa
+```python
+limit = l_a
+step = 1
+points_list = np.arange(0,limit,step)
+perc = np.zeros((len(points_list)))
+
+for i in range(len(points_list)) :
+    _, _, perc[i] = MU.PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
+    
+print("Number of patches =",len(perc))
+```
+Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file, visibile qui.
+```python
+with open("all_perc.txt", "w") as file0 :
+    for i in range(len(points_list)) :
+        file0.write("{}\t{}\n".format(points_list[i],perc[i]))
+```
+```python
+# prendo indici delle patch e relative percentuali dal file
+points_list = np.loadtxt("./risultati/all_perc.txt", usecols=0, unpack=True)
+perc = np.loadtxt("./risultati/all_perc.txt", usecols=1, unpack=True)
+```
 ### Utilità
 Segue la funzione che restituisce una matrice con elementi non nulli solo nelle celle in cui la maschera ha valore True. Essa è necessaria in `PlotMeanVariancePatch` per graficare un colore uniforme per i valori della varianza sotto la soglia scelta.
 ```python
@@ -373,7 +398,7 @@ def MatrixMasked(matrix, mask) :
     matrix_new = np.where(mask, matrix, 0)
     return matrix_new
 ```
-### Grafici
+### Altri Grafici
 La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono
 * l'indice del punto centrale della patch `center`.
 * la distanza tra i punti della patch `Dpp`.
@@ -440,7 +465,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
         mpl.savefig("{}.pdf".format(n))
         print("The figure was generated.")
 ```
-Il grafico di Figura 5
+Il grafico di Figura 5 viene prodotto dalle seguenti istruzioni
 ```python
 fig = mpl.figure(figsize=(8,4), dpi=200)
 ax = fig.add_subplot(111)
@@ -448,9 +473,9 @@ ax = fig.add_subplot(111)
 ax.set_xlim(0, len(perc))
 ax.set_ylim(0, np.amax(perc)+0.01)
 
-ax.set_title("Threshold = {} $\AA$, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
-ax.set_xlabel("Punto della superficie", fontsize="8")
-ax.set_ylabel("Percentuale", fontsize="8")
+ax.set_title("Threshold = {}, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
+ax.set_xlabel("Surface point", fontsize="8")
+ax.set_ylabel("Percentage", fontsize="8")
 
 ax.tick_params(axis="both", width ="0.30", color="black", labelsize="6")
 ax.locator_params(axis="x", nbins=21)
@@ -459,8 +484,8 @@ for side in ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
     ax.spines[side].set_linewidth(0.30)
     ax.spines[side].set_color("black")
 
-ax.plot(points_list, perc, "o", markersize="0.4")
+ax.plot(points_list, perc, "o", markersize="0.4", rasterized=True)
 
 fig.tight_layout()
-mpl.savefig("plot_01.png")
+mpl.savefig("all_perc.pdf")
 ```
