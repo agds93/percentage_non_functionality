@@ -105,7 +105,7 @@ print("Npoints", l_a)
 surf_a = np.zeros((l_a, 6))
 surf_a[:,:] = surf_a_[["x", "y", "z", "Nx", "Ny", "Nz"]]
 ```
-dove `surf_name_a` è il percorso del file *.dms*, visibile [qui](http://github.com).
+dove `surf_name_a` è il percorso del file *.dms*, visibile <a href="data/4bs2_RRM2.dms" target="_blank">qui</a>.  
 La matrice relativa all'intera superficie `surf_a` deve essere inizializzato come oggetto della classe `Surface`: 
 ```{.python}
 surf_a_obj = SF.Surface(surf_a[:,:], patch_num = 0, r0 = Rs, theta_max = 45)
