@@ -1,7 +1,7 @@
 **Autore**: Alessandro Giudice    
 **Collaboratore**: Samuel Santhosh Gomez  
 
-# Percentuale di non funzionalità di una patch
+# Percentuale di non funzionalità di una patch in disco unitario
 Di seguito riporto la procedura per calcolare la percentuale di non funzionalità di una specifica zona di una superficie proteica in 3D.  
 Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, visibile in appendice.   
 
@@ -277,7 +277,7 @@ Invece per creare la matrice della media `plane` e delle varianza `plane_var` co
 ```
 ### Percentuale di non funzionalità
 Per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il primo metodo si usa la funzione seguente. L'input è formato da:
-* una label che determina se restituire la matrice di media e/o la varianza:
+* una label che determina se restituire, oltre a `perc`, la matrice di media e/o varianza:
     * "mean" restituisce solo i valori medi
     * "var" produce solo le varianze
     * "" o altro fornisce valori medi e varianze
@@ -366,12 +366,24 @@ def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, thres
     else :
         return plane, plane_var, perc
 ```
-### Grafici
+### Utilità
+Segue la funzione che restituisce una matrice con elementi non nulli solo nelle celle in cui la maschera ha valore True. Essa è necessaria in `PlotMeanVariancePatch` per graficare un colore uniforme per i valori della varianza sotto la soglia scelta.
 ```python
 def MatrixMasked(matrix, mask) :
     matrix_new = np.where(mask, matrix, 0)
     return matrix_new
 ```
+### Grafici
+La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono
+* l'indice del punto centrale della patch `center`.
+* la distanza tra i punti della patch `Dpp`.
+* il raggio `Rs` della sfera che include la patch.
+* il valore trovato di `perc`.
+* il valore di soglia scelto.
+* la matrice della media.
+* la matrice della varianza.
+* le mappe dei <a href="https://matplotlib.org/stable/tutorials/colors/colormaps.html" target="_blank">colori</a> da utilizzare.
+* il nome del file di output.
 ```python
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
     
