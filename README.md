@@ -83,10 +83,11 @@ Dpp = 0.5      # la distanza tra i punti della stessa patch
 Rs = 6         # il raggio della sfera che include la patch
 threshold = 5  # valore soglia per stabilire se la varianza è alta (in ångström)
 ```
-Gli indici della superficie usati per i grafici mostrati sono
+L'indice del punto centrale della patch usato per Figura 1, Figura 2, e per i grafici nella parte alta della Figura 3-4 è
 ```{.python}
 center = 5000
 ```
+invece quello usato per i grafici nella parte bassa della Figura 3-4 è
 ```{.python}
 center = 19841
 ```
@@ -104,7 +105,7 @@ print("Npoints", l_a)
 surf_a = np.zeros((l_a, 6))
 surf_a[:,:] = surf_a_[["x", "y", "z", "Nx", "Ny", "Nz"]]
 ```
-dove `surf_name_a` è il percorso del file *.dms*.
+dove `surf_name_a` è il percorso del file *.dms*, visibile [qui](http://github.com).
 La matrice relativa all'intera superficie `surf_a` deve essere inizializzato come oggetto della classe `Surface`: 
 ```{.python}
 surf_a_obj = SF.Surface(surf_a[:,:], patch_num = 0, r0 = Rs, theta_max = 45)
@@ -128,7 +129,7 @@ Per trovare la quota `z` dell'origine $C$ del cono che ingloba la patch si usa
 ```{.python}
 z = surf_a_obj.FindOrigin(rot_patch, 0)
 ```
-dove se si sostituisce `0` con `1` si produce la Figura 2 con `center = 5000`.
+dove se si sostituisce `0` con `1` si produce il grafico dellapatch inglobata dentro il cono. La Figura 2 si ottiene con `center = 5000`.
 
 ### Creazione del piano di fit
 Per creare il piano della media e delle varianza con il primo metodo si utilizza la funzione
