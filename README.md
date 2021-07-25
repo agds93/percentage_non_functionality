@@ -440,3 +440,27 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
         mpl.savefig("{}.pdf".format(n))
         print("The figure was generated.")
 ```
+Il grafico di Figura 5
+```python
+fig = mpl.figure(figsize=(8,4), dpi=200)
+ax = fig.add_subplot(111)
+
+ax.set_xlim(0, len(perc))
+ax.set_ylim(0, np.amax(perc)+0.01)
+
+ax.set_title("Threshold = {} $\AA$, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
+ax.set_xlabel("Punto della superficie", fontsize="8")
+ax.set_ylabel("Percentuale", fontsize="8")
+
+ax.tick_params(axis="both", width ="0.30", color="black", labelsize="6")
+ax.locator_params(axis="x", nbins=21)
+ax.locator_params(axis="y", nbins=21)
+for side in ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
+    ax.spines[side].set_linewidth(0.30)
+    ax.spines[side].set_color("black")
+
+ax.plot(points_list, perc, "o", markersize="0.4")
+
+fig.tight_layout()
+mpl.savefig("plot_01.png")
+```
