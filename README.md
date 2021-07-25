@@ -380,7 +380,7 @@ for i in range(len(points_list)) :
     
 print("Number of patches =",len(perc))
 ```
-Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file, visibile qui.
+Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file, visibile <a href="/data/all_perc.txt" target="_blank">qui</a>.
 ```python
 with open("all_perc.txt", "w") as file0 :
     for i in range(len(points_list)) :
@@ -465,7 +465,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
         mpl.savefig("{}.pdf".format(n))
         print("The figure was generated.")
 ```
-Il grafico di Figura 5 viene prodotto dalle seguenti istruzioni
+Il grafico in Figura 5 viene prodotto da
 ```python
 fig = mpl.figure(figsize=(8,4), dpi=200)
 ax = fig.add_subplot(111)
