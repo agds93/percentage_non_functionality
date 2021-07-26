@@ -52,8 +52,8 @@ La percentuale di non funzionalità `perc` di una patch coincide con la percentu
 
 ## Appendice
 ### Librerie e moduli
-Il codice scritto è stato eseguito con <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> utilizzando almeno `python 3.8.10`.  
-I moduli python usati, compreso `jupyterlab`, che sono stati installati tramite 
+Il codice scritto è stato eseguito con <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> utilizzando `python 3.8`.  
+I moduli python usati, compreso `jupyterlab`, installati tramite 
 <a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a>, sono elencati sotto.
 ```python
 import os, sys
@@ -65,7 +65,7 @@ import pandas as pd
 ```python
 from mayavi import mlab
 ```
-in particolare `mlab` è necessario per visualizzare le superfici 3D tramite una finestra Qt, così da produrre la Figura 1-2.     
+Il modulo `mayavi`, in particolare `mlab`, è necessario per visualizzare le superfici 3D in una finestra Qt, così da produrre la Figura 1-2.  
 Mentre le librerie di base sono
 ```python
 sys.path.append("./bin/")
