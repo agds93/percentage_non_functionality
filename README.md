@@ -328,7 +328,7 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
     else :
         return plane, plane_var, perc
 ```
- Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo,infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
+Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo,infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
@@ -386,10 +386,26 @@ with open("all_perc.txt", "w") as file0 :
     for i in range(len(points_list)) :
         file0.write("{}\t{}\n".format(points_list[i],perc[i]))
 ```
+così è possibile caricare indici delle patch e relative percentuali direttamente da tale file.
 ```python
-# prendo indici delle patch e relative percentuali dal file
 points_list = np.loadtxt("./risultati/all_perc.txt", usecols=0, unpack=True)
 perc = np.loadtxt("./risultati/all_perc.txt", usecols=1, unpack=True)
+```
+Per trovare i massimi e i minimi di `perc` in uno spefico intervallo si usa 
+```python
+def zone_extremes(vect, begin, end) :
+    if begin == 0 :
+        border = 0
+    else :
+        border = begin
+    if end == len(vect) :
+        end -= 1
+    vect_lim = vect[begin:end]
+    imax = np.argmax(vect_lim) + border
+    imin = np.argmin(vect_lim) + border
+    vmax = np.amax(vect_lim)
+    vmin = np.amin(vect_lim)
+    return imax, vmax, imin, vmin
 ```
 ### Utilità
 Segue la funzione che restituisce una matrice con elementi non nulli solo nelle celle in cui la maschera ha valore True. Essa è necessaria in `PlotMeanVariancePatch` per graficare un colore uniforme per i valori della varianza sotto la soglia scelta.
@@ -467,8 +483,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
 ```
 Il grafico in Figura 5 viene prodotto da
 ```python
-fig = mpl.figure(figsize=(8,4), dpi=200)
-ax = fig.add_subplot(111)
+fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
 
 ax.set_xlim(0, len(perc))
 ax.set_ylim(0, np.amax(perc)+0.01)
