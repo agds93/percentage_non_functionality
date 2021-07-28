@@ -6,7 +6,11 @@ Di seguito riporto la procedura per calcolare la percentuale di non funzionalit�
 Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, visibile in appendice.   
 
 ## Selezione di una patch
-Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D.
+L'intera superficie proteica studiata è visibile in Figura 0.
+<p align="center"><img src="img/entire_protein.png" width=700px></p>
+<p align="center"><i>Figura 0</i>: L'intera superficie proteica in 3D.</p>
+
+Una patch è un gruppo di punti di una superficie 3D, come quella in Figura 1.
 <p align="center"><img src="img/Patch_Point5000.png" width=700px></p>
 <p align="center"><i>Figura 1</i>: Una possibile patch della superficie.</p>
 
@@ -17,12 +21,6 @@ Poi la patch selezionata deve essere inglobata in un cono come in Figura 2.
 
 Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.  
 
-Come anticipato sopra, un piano di fit per sarà rappresentato da una matrice quadrata 2D di lato `Npixel`. Le matrici, cioè i piani di fit, producibili sono due:
-
-* la matrice in cui in ogni elemento è la media delle distanze contenute nel relativo pixel.
-
-* la matrice in cui in ogni elemento è la varianza delle distanze contenute nel relativo pixel.
-
 ## Creazione del piano di fit
 Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npixel`, in cui ogni cella è un pixel. All'interno di ogni pixel ci possono essere il valore della media o della varianza delle distanze tra i relativi punti della patch e l'origine C del cono. Di conseguenza i possibili piani da creare sono due:
 
@@ -32,13 +30,13 @@ Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npix
 
 Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).  
 Per creare il piano della media e della varianza di tali distanze ci sono due metodi.  
-Il primo metodo costruisce un piano in cui ogni pixel raccoglie le distanze rispetto ai punti della patch posti perpendicolarmente sopra un pixel. Il valore finale in ogni pixel sarà la media o la varianza di tali distanze. Esempi di tale metodo sono visibili in Figura 3.
+Il primo metodo (dalla funzione `CreatePlane_Weigths`) costruisce un piano in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova perpendicolarmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3.
 <p align="center">
 <img src="img/Point_5000_Weigths.png" width=700px>
 <img src="img/Point_19841_Weigths.png" width=700px>
 </p>
 <p align="center"><i>Figura 3</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il primo metodo.</p>
-Invece nel secondo metodo il piano viene costruito in modo che ogni pixel raccolca le distanze rispetto ai punti della patch se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Il valore finale in ogni pixel sarà di nuovo la media o la varianza di tali distanze. Esempi di tale metodo sono visibili in Figura 4.
+Nel secondo metodo (dalla funzione `CreatePlane_Projections`) il piano viene costruito in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Due esempi di tale metodo sono visibili in Figura 4.
 <p align="center">
 <img src="img/Point_5000_Projections.png" width=700px>
 <img src="img/Point_19841_Projections.png" width=700px>
@@ -65,7 +63,7 @@ import pandas as pd
 ```python
 from mayavi import mlab
 ```
-Il modulo `mayavi`, in particolare `mlab`, è necessario per visualizzare le superfici 3D in una finestra Qt, così da produrre la Figura 1-2.  
+Il modulo `mayavi`, in particolare `mlab`, è necessario per visualizzare le superfici 3D in una finestra Qt, così da produrre la Figura 0-1-2.  
 Mentre le librerie di base sono
 ```python
 sys.path.append("./bin/")
@@ -91,7 +89,7 @@ invece quello usato per i grafici nella parte bassa della Figura 3-4 è
 ```python
 center = 19841
 ```
-### Caricare una superficie proteica
+### Caricare la superficie proteica
 Una volta scelta la proteina da studiare bisogna scaricare il relativo file *.pdb* dalla
 <a href="https://www.rcsb.org/" target="_blank">Protein Data Bank</a>
 da cui creare un file *.dms* (per esempio con il tool
@@ -105,13 +103,18 @@ print("Npoints", l_a)
 surf_a = np.zeros((l_a, 6))
 surf_a[:,:] = surf_a_[["x", "y", "z", "Nx", "Ny", "Nz"]]
 ```
-dove `surf_name_a` è il percorso del file *.dms*, visibile <a href="data/4bs2_RRM2.dms" target="_blank">qui</a>.  
+dove `surf_name_a` è il percorso del file *.dms* usato, disponibile <a href="data/4bs2_RRM2.dms" target="_blank">qui</a>.  
 La matrice relativa all'intera superficie `surf_a` deve essere inizializzato come oggetto della classe `Surface`: 
 ```python
 surf_a_obj = SF.Surface(surf_a[:,:], patch_num = 0, r0 = Rs, theta_max = 45)
 ```
 ### Selezione di una patch
-Dopo aver caricato la superficie completa, una patch è costruita in base ai parametri scelti tramite
+Dopo aver caricato i punti della superficie completa, per graficare l'intera superficie proteica, come in Figura 0, si usa
+```python
+res1, c = SF.ConcatenateFigPlots([surf_a_obj.surface[:,:3]])
+SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
+```
+Una patch è costruita in base ai parametri scelti tramite
 ```python
 patch, _ = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
 ```
