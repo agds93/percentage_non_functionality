@@ -110,12 +110,12 @@ La matrice relativa all'intera superficie `surf_a` deve essere inizializzato com
 ```python
 surf_a_obj = SF.Surface(surf_a[:,:], patch_num = 0, r0 = Rs, theta_max = 45)
 ```
-### Selezione di una patch
-Dopo aver caricato i punti della superficie completa, per graficare l'intera superficie proteica, come in Figura 0, si usa
+Dopo aver caricato i punti della superficie completa, per graficare l'intera superficie proteica come in Figura 0 si usa
 ```python
 res1, c = SF.ConcatenateFigPlots([surf_a_obj.surface[:,:3]])
 SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
 ```
+### Selezione di una patch
 Una patch è costruita in base ai parametri scelti tramite
 ```python
 patch, _ = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
