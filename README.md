@@ -41,12 +41,19 @@ Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costrui
 <p align="center"><i>Figura 4</i>: Media e varianza di due patch (una per riga) prodotte con il secondo metodo.</p>
 
 ## Percentuale di non funzionalità
-La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4).  
+La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4).
 I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
 <p align="center"><img src="img/all_perc.png" width=800px></p>
 <p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
 <p align="center"><i>Figura 5</i>: Percentuale di non funzionalità con il secondo metodo per ogni punto della superficie.</p>
+
+Come mostrato in Figura 6-7, il secondo metodo produce piani di fit con una percentuale di non-funzionalità generalmente più bassa rispetto al primo metodo.
+
+<p align="center"><img src="img/hist_01.png" width=800px></p>
+<p align="center"><i>Figura 6</i>: Istogramma della percentuale di non funzionalità con il primo metodo.</p>
+<p align="center"><img src="img/hist_02.png" width=800px></p>
+<p align="center"><i>Figura 7</i>: Istogramma della percentuale di non funzionalità con il primo metodo.</p>
 
 ## Appendice
 ### Librerie e moduli
@@ -420,4 +427,20 @@ for side in ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
 ax.plot(points_list, perc, "o", markersize="0.4", rasterized=True)
 fig.tight_layout()
 mpl.savefig("all_perc.pdf")
+```
+Il grafico in Figura 6-7 viene prodotto da
+```python
+fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
+ax.set_title("Threshold = {} $\AA$, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
+ax.set_xlabel("Percentage", fontsize="8")
+ax.set_ylabel("Number of values", fontsize="8")
+ax.tick_params(axis="both", width ="0.30", color="black", labelsize="6")
+ax.locator_params(axis="x", nbins=20)
+ax.locator_params(axis="y", nbins=20)
+for side in ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
+    ax.spines[side].set_linewidth(0.30)
+    ax.spines[side].set_color("black")
+ax.hist(perc, bins=int(np.sqrt(len(perc))), histtype="step", rasterized=True)
+fig.tight_layout()
+mpl.savefig("hist.pdf")
 ```
