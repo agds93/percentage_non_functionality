@@ -133,7 +133,6 @@ Per trovare la quota `z` dell'origine C del cono che ingloba la patch si usa
 z = surf_a_obj.FindOrigin(rot_patch, 0)
 ```
 dove se si sostituisce `0` con `1` si produce il grafico della patch inglobata dentro il cono. La Figura 2 si ottiene con `center = 5000`.
-
 ### Creazione del piano di fit
 Per creare la matrice della media `plane` e delle varianza `plane_var` con il primo metodo si utilizza la funzione seguente. L'input è formato da:
 * una label che determina se restituire la matrice di media e/o la varianza:
@@ -359,27 +358,20 @@ La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono:
 * il nome del file di output.
 ```python
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
-    
     mx1 = pm
     mx2 = MatrixMasked(pv, (pv >= T))
     matrix = [ mx1, mx2 ]
-    
     s0 = "Patch of center = {}, distance between points = {}, radius = {}".format(center, Dpp, Rs)
-    
     s1 = "Mean in function of position\n\n"
     if T == 0 :
         s2 = "Variance in function of position\n\n"
     else :
-        s2 = "Variance in function of position.  Threshold = {:.2f}\nPercentage of higher variances = {:.4f}\n".format(T, perc)
-        
+        s2 = "Variance in function of position.  Threshold = {:.2f}\nPercentage of higher variances = {:.4f}\n".format(T, perc)   
     titles = [s1, s2]
-    
     if len(color_maps) != 2 :
         color_maps = ["Greens", "Reds"]
-
-    fig, ax = mpl.subplots(nrows=1, ncols=2, figsize=(8,4), facecolor="white", dpi=200) # dpi=200 per compensare rasterized
+    fig, ax = mpl.subplots(nrows=1, ncols=2, figsize=(8,4), facecolor="white", dpi=200)
     fig.suptitle(s0, fontsize="9")
-
     for row in range(1) :
         for col in range(2):
             data = matrix[col]
@@ -392,7 +384,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
             for side in ax[col].spines.keys():  # 'top', 'bottom', 'left', 'right'
                 ax[col].spines[side].set_linewidth(0.30)
                 ax[col].spines[side].set_color("black")
-            im = ax[col].pcolormesh(data, cmap=color_maps[col], rasterized=True) # senza rasterized il file è troppo grande
+            im = ax[col].pcolormesh(data, cmap=color_maps[col], rasterized=True)
             if col == 1 :
                 ticks_list = [min_data, T, max_data]
             else :
@@ -402,9 +394,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
             for side in cb.ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
                 cb.ax.spines[side].set_linewidth(0.30)
                 cb.ax.spines[side].set_color("black")
-
     fig.tight_layout()
-    
     if name != "" or name == "default" :
         if name == "default" :
             n = "MeanVariance_Patch{}_Dpp{}_perc{}".format(center, Dpp, perc)
@@ -416,23 +406,18 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
 Il grafico in Figura 4-5 viene prodotto da
 ```python
 fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
-
 ax.set_xlim(0, len(perc))
 ax.set_ylim(0, np.amax(perc)+0.01)
-
 ax.set_title("Threshold = {}, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
 ax.set_xlabel("Surface point", fontsize="8")
 ax.set_ylabel("Percentage", fontsize="8")
-
 ax.tick_params(axis="both", width ="0.30", color="black", labelsize="6")
 ax.locator_params(axis="x", nbins=21)
 ax.locator_params(axis="y", nbins=21)
 for side in ax.spines.keys():  # 'top', 'bottom', 'left', 'right'
     ax.spines[side].set_linewidth(0.30)
     ax.spines[side].set_color("black")
-
 ax.plot(points_list, perc, "o", markersize="0.4", rasterized=True)
-
 fig.tight_layout()
 mpl.savefig("all_perc.pdf")
 ```
