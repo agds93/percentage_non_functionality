@@ -10,19 +10,16 @@ L'intera superficie proteica studiata è visibile in Figura 0.
 <p align="center"><img src="img/entire_protein.png" width=700px></p>
 <p align="center"><i>Figura 0</i>: L'intera superficie proteica in 3D.</p>
 
-Una patch è un gruppo di punti di una superficie 3D, come quella in Figura 1.
+Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto della superficie `center` e un raggio `Rs`.
 <p align="center"><img src="img/Patch_Point5000.png" width=700px></p>
 <p align="center"><i>Figura 1</i>: Una possibile patch della superficie.</p>
 
-Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto dell'intera superficie `center` e un raggio `Rs`.  
-Poi la patch selezionata deve essere inglobata in un cono come in Figura 2.
+Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
 <p align="center"><img src="img/Cone_Point5000.png" width=700px></p>
 <p align="center"><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).</p>
 
-Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.  
-
 ## Creazione del piano di fit
-Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npixel`, in cui ogni cella è un pixel. All'interno di ogni pixel ci possono essere il valore della media o della varianza delle distanze tra i relativi punti della patch e l'origine C del cono. Di conseguenza i possibili piani da creare sono due:
+Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npixel`, in cui ogni cella è un pixel. All'interno di ogni pixel è presente il valore della media o della varianza delle distanze tra i relativi punti della patch e l'origine C del cono. Di conseguenza le possibili griglie da creare sono due:
 
 * la matrice delle medie delle distanze in ogni pixel, come nella parte sinistra delle Figure 3-4.
 
@@ -30,21 +27,22 @@ Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npix
 
 Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).  
 Per creare il piano della media e della varianza di tali distanze ci sono due metodi.  
-Il primo metodo (dalla funzione `CreatePlane_Weigths`) costruisce un piano in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova perpendicolarmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3.
+Il primo metodo (funzione `CreatePlane_Weigths`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`.
 <p align="center">
 <img src="img/Point_5000_Weigths.png" width=700px>
 <img src="img/Point_19841_Weigths.png" width=700px>
 </p>
-<p align="center"><i>Figura 3</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il primo metodo.</p>
-Nel secondo metodo (dalla funzione `CreatePlane_Projections`) il piano viene costruito in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Due esempi di tale metodo sono visibili in Figura 4.
+<p align="center"><i>Figura 3</i>: Media e varianza di due patch (una per riga) prodotte con il primo metodo.</p>
+Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costruita in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Gli stessi esempi di Figura 3 prodotti con tale metodo sono visibili in Figura 4. 
 <p align="center">
 <img src="img/Point_5000_Projections.png" width=700px>
 <img src="img/Point_19841_Projections.png" width=700px>
 </p>
-<p align="center"><i>Figura 4</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il secondo metodo.</p>
+<p align="center"><i>Figura 4</i>: Media e varianza di due patch (una per riga) prodotte con il secondo metodo.</p>
 
 ## Percentuale di non funzionalità
-La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4). I valori della percentuale, calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`, per ogni punto della superficie sono visibili rispettivamente in Figura 4 e Figura 5.
+La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4).  
+I valori della percentuale `perc` sono calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per il primo e secondo metodo.
 <p align="center"><img src="img/all_perc.png" width=800px></p>
 <p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
@@ -75,14 +73,14 @@ import SurfaceFunc as SF
 scritte da <a href="https://scholar.google.it/citations?user=hjkTN0YAAAAJ&hl=it" target="_blank">Mattia Miotto</a>.
 
 ### Parametri
-I valori dei parametri usati per selezionare e fittare una patch sono
+I valori dei parametri usati per selezionare una patch e creare il piano di fit sono
 ```python
 Npixel = 25    # il lato del piano in pixel
 Dpp = 0.5      # la distanza tra i punti della stessa patch
 Rs = 6         # il raggio della sfera che include la patch
 threshold = 5  # valore soglia per stabilire se la varianza è alta
 ```
-I valori sono in ångström, tranne `Npixel`.
+I valori sono in ångström, tranne `Npixel`.  
 L'indice del punto centrale della patch usato per Figura 1, Figura 2, e per i grafici nella parte alta della Figura 3-4 è
 ```python
 center = 5000
@@ -125,11 +123,11 @@ Per produrre il grafico in Figura 1, con `center = 5000`, si usa:
 res1, c = SF.ConcatenateFigPlots([patch[:,:3]])
 SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
 ```
-Per essere utilizzabile, la patch deve essere ruotata (`patch` diventa `rot_patch`) in modo che sia perpendicolare al piano xy. Questo si può fare con
+Per essere utilizzabile, la patch in Figura 1 deve essere ruotata (`patch` diventa `rot_patch`) in modo che sia perpendicolare al piano xy. Questo si può fare con
 ```python 
 rot_patch, rot_patch_nv = surf_a_obj.PatchReorientNew(patch, +1)
 ```
-dove il parametro `+1` indica che i versori normali `rot_patch_nv` sono rivolti verso l'alto.  
+dove il parametro `+1` (`-1`) indica che i versori normali `rot_patch_nv` sono rivolti verso l'alto (basso).  
 Per trovare la quota `z` dell'origine C del cono che ingloba la patch si usa
 ```python
 z = surf_a_obj.FindOrigin(rot_patch, 0)
@@ -147,25 +145,12 @@ Per creare la matrice della media `plane` e delle varianza `plane_var` con il pr
 * il numero di pixel per lato della griglia `Npixel`.
 ```python
 def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
-
     rot_p = np.copy(patch)
-
-    # spostare la patch per avere l'origine del cono in [0,0,0]
     rot_p[:,2] -= z_c
-
-    # calcolare le distanze tra i punti e l'origine
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + rot_p[:,2]**2)
-    
-    # calcolare gli angoli sul piano
     thetas = np.arctan2(rot_p[:,1], rot_p[:,0])
-
-    # calcolare le distanze sul piano
     dist_plane = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2)
-
-    # calcolare il raggio del cerchio come punto di massima distanza
     R = np.amax(dist_plane)*1.01
-
-    # creare le matrici
     if label == "mean" :
         plane = np.zeros((Np,Np))
     elif label == "var" :
@@ -173,15 +158,9 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
     else :
         plane = np.zeros((Np,Np))
         plane_var = np.zeros((Np,Np))
-    
-    # adattare i punti ai pixel
     rot_p[:,0] += R
     rot_p[:,1] -= R
-
     pos_plane = rot_p[:,:2]
-    
-    # prendere solo i valori nel disco unitario
-
     dR = 2.*R/Np
     rr_x = 0
     rr_y = 0
@@ -201,7 +180,6 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
                     plane_var[j,i] = np.var(weigths[mask]) 
             rr_y += dR
         rr_x += dR
-        
     if label == "mean" :
         return plane, weigths, dist_plane, thetas
     elif label == "var" :
@@ -212,33 +190,15 @@ def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
 Invece per creare la matrice della media `plane` e delle varianza `plane_var` con il secondo metodo si utilizza la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo.
 ```python
  def CreatePlane_Projections(label, patch, z_c, Np = 20) :
-    
     rot_p = np.copy(patch)
-     
-    # calcolare le distanze tra i punti e l'origine in [0,0,z_c]
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + (rot_p[:,2]-z_c)**2)
-    
-    # calcolare l'angolo di pendenza, rispetto al piano di fit del segmento che connette ogni punto all'origine
-    slope_angle = np.arcsin( (rot_p[:,2]-z_c) / weigths[:] )
-    
-    # spostamento delle coordinate xy originali original xy coordinates per intersecare le coordiante del segmento con il piano di fit
-    # i valori sono positivi se rot_p[:,2] > 0 oppure negativi se rot_p[:,2] < 0  
+    slope_angle = np.arcsin( (rot_p[:,2]-z_c) / weigths[:] )  
     shift = (rot_p[:,2]) / np.tan(slope_angle)
-    
-    # calcolare le distanze sul piano
     dist_plane = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2) + shift
-    
-    # calcolare il raggio del cerchio come punto di massima distanza
     R = np.amax(dist_plane)*1.01
-    
-    # calcolare gli angoli sul piano (pendenza dei segmenti spostati sul piano di fit)
     thetas = np.arctan2(rot_p[:,1], rot_p[:,0])
-    
-    # nuove coordiante dei punti sul piano di fit
     rot_p[:,0] += shift[:]*np.cos(thetas[:])
     rot_p[:,1] += shift[:]*np.sin(thetas[:])
-
-    # creare le matrici
     if label == "mean" :
         plane = np.zeros((Np,Np))
     elif label == "var" :
@@ -246,15 +206,9 @@ Invece per creare la matrice della media `plane` e delle varianza `plane_var` co
     else :
         plane = np.zeros((Np,Np))
         plane_var = np.zeros((Np,Np))
-    
-    # adattare i punti ai pixel
     rot_p[:,0] += R
     rot_p[:,1] -= R
-
     pos_plane = rot_p[:,:2]
-    
-    # prendere solo i valori nel disco unitario
-
     dR = 2.*R/Np
     rr_x = 0
     rr_y = 0
@@ -274,7 +228,6 @@ Invece per creare la matrice della media `plane` e delle varianza `plane_var` co
                     plane_var[j,i] = np.var(weigths[mask]) 
             rr_y += dR
         rr_x += dR
-        
     if label == "mean" :
         return plane, weigths, dist_plane, thetas
     elif label == "var" :
@@ -296,38 +249,20 @@ Per calcolare la percentuale `perc` di varianze più alte di una certa soglia co
 
 ```python
 def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold) :
-    
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
     rot_patch, _ = surf_a_obj.PatchReorientNew(patch, 1)
-    
     z = surf_a_obj.FindOrigin(rot_patch)
-    
-    # Per ottenere il piano delle varianze (rispettivamente senza o con il piano delle medie)
     if label == "var" :
         plane_var, _, _, _ = CreatePlane_Weigths("var", patch=rot_patch, z_c=z , Np=Npixel)
     else :
         plane, plane_var, _, _, _ = CreatePlane_Weigths("", patch=rot_patch, z_c=z , Np=Npixel)
-    
-    # Inizializzo la classe Zernike2d
     ZernikeM = ZF.Zernike2d(plane_var)
-    
-    # Cambiamento di base della matrice nella base polare
     plane_var_polar = ZernikeM.r
-    
-    # Individuo quali distanze sono all'interno del disco unitario (cioè sono minori o uguali a 1) tramite una maschera
     polar_mask = (plane_var_polar <= 1)
-    
-    # Valori delle varianze nel disco unitario
     plane_var_masked = plane_var[polar_mask]
-    
-    # Numero di pixel all'interno del cerchio unitario
     Npixel_new = len(plane_var_masked)
-    
-    # Numero di varianze non nulle sopra la soglia (threshold) usando una maschera
     num_high_var = np.count_nonzero( plane_var_masked > threshold )
-    
     perc = num_high_var / Npixel_new 
-    
     if label == "var" :
         return plane_var, perc
     else :
@@ -336,53 +271,43 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
 Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo, infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
-    
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
     rot_patch, _ = surf_a_obj.PatchReorientNew(patch, 1)
-    
     z = surf_a_obj.FindOrigin(rot_patch)
-    
-    # Per ottenere il piano delle varianze (rispettivamente senza o con il piano delle medie)
     if label == "var" :
         plane_var, _, _, _ = CreatePlane_Projections("var", patch=rot_patch, z_c=z , Np=Npixel)
     else :
         plane, plane_var, _, _, _ = CreatePlane_Projections("", patch=rot_patch, z_c=z , Np=Npixel)
-    
-    # Inizializzo la classe Zernike2d
     ZernikeM = ZF.Zernike2d(plane_var)
-    
-    # Cambiamento di base della matrice nella base polare
     plane_var_polar = ZernikeM.r
-    
-    # Individuo quali distanze sono all'interno del disco unitario (cioè sono minori o uguali a 1) tramite una maschera
     polar_mask = (plane_var_polar <= 1)
-    
-    # Valori delle varianze nel disco unitario
     plane_var_masked = plane_var[polar_mask]
-    
-    # Numero di pixel all'interno del cerchio unitario
     Npixel_new = len(plane_var_masked)
-    
-    # Numero di varianze non nulle sopra la soglia (threshold) usando una maschera
     num_high_var = np.count_nonzero( plane_var_masked > threshold )
-    
     perc = num_high_var / Npixel_new 
-    
     if label == "var" :
         return plane_var, perc
     else :
         return plane, plane_var, perc
 ```
-Per calcolare la `perc` di ogni punto della superficie si usa
+Per calcolare la `perc` di ogni punto della superficie con il primo metodo si usa
 ```python
 limit = l_a
 step = 1
 points_list = np.arange(0,limit,step)
 perc = np.zeros((len(points_list)))
-
 for i in range(len(points_list)) :
-    _, _, perc[i] = PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
-    
+    _, _, perc[i] = PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)  
+print("Number of patches =",len(perc))
+```
+Per calcolare la `perc` di ogni punto della superficie con il secondo metodo si usa
+```python
+limit = l_a
+step = 1
+points_list = np.arange(0,limit,step)
+perc = np.zeros((len(points_list)))
+for i in range(len(points_list)) :
+    _, _, perc[i] = PercHigherVariance_Projections(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
 print("Number of patches =",len(perc))
 ```
 Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file:
@@ -422,7 +347,7 @@ def MatrixMasked(matrix, mask) :
     return matrix_new
 ```
 ### Altri Grafici
-La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono
+La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono:
 * l'indice del punto centrale della patch `center`.
 * la distanza tra i punti della patch `Dpp`.
 * il raggio `Rs` della sfera che include la patch.
