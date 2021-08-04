@@ -44,9 +44,11 @@ Nel secondo metodo (dalla funzione `CreatePlane_Projections`) il piano viene cos
 <p align="center"><i>Figura 4</i>: Media e varianza di due patch (la prima nella riga sopra, l'altra sotto) prodotte con il secondo metodo.</p>
 
 ## Percentuale di non funzionalità
-La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4). I valori della percentuale per ogni punto della superficie sono visibili in Figura 5.
+La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixel della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nella parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia verrà mostrato un colore uniforme (grafico in alto in Figura 3-4), in caso contrario verrà visualizzato un colore più o meno scuro per un valore alto o basso della varianza (grafico in basso in Figura 3-4). I valori della percentuale, calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`, per ogni punto della superficie sono visibili rispettivamente in Figura 4 e Figura 5.
 <p align="center"><img src="img/all_perc.png" width=800px></p>
-<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità per ogni punto della superficie.</p>
+<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
+<p align="center"><img src="img/all_perc_projections.png" width=800px></p>
+<p align="center"><i>Figura 5</i>: Percentuale di non funzionalità con il secondo metodo per ogni punto della superficie.</p>
 
 ## Appendice
 ### Librerie e moduli
@@ -331,7 +333,7 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
     else :
         return plane, plane_var, perc
 ```
-Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo,infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
+Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo, infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
@@ -484,7 +486,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
         mpl.savefig("{}.pdf".format(n))
         print("The figure was generated.")
 ```
-Il grafico in Figura 5 viene prodotto da
+Il grafico in Figura 4-5 viene prodotto da
 ```python
 fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
 
