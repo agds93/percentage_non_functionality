@@ -42,7 +42,7 @@ Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costrui
 
 ## Percentuale di non funzionalità
 La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4).  
-I valori della percentuale `perc` sono calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per il primo e secondo metodo.
+I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
 <p align="center"><img src="img/all_perc.png" width=800px></p>
 <p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
