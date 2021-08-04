@@ -53,8 +53,8 @@ La percentuale di non funzionalità `perc` di una patch coincide con la percentu
 ## Appendice
 ### Librerie e moduli
 Il codice scritto è stato eseguito con <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> utilizzando `python 3.8`.  
-I moduli python usati, compreso `jupyterlab`, installati tramite 
-<a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a>, sono elencati sotto.
+I moduli python usati, installati tramite 
+<a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a> (compreso `jupyterlab`), sono elencati sotto.
 ```python
 import os, sys
 import numpy as np
@@ -381,17 +381,19 @@ points_list = np.arange(0,limit,step)
 perc = np.zeros((len(points_list)))
 
 for i in range(len(points_list)) :
-    _, _, perc[i] = MU.PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
+    _, _, perc[i] = PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
     
 print("Number of patches =",len(perc))
 ```
-Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file, visibile <a href="/data/all_perc.txt" target="_blank">qui</a>.
+Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file:
+* i valori trovati con `PercHigherVariance_Weigths` sono visibili <a href="/data/all_perc.txt" target="_blank">qui</a>.
+* i valori trovati con `PercHigherVariance_Projections` sono visibili <a href="/data/all_perc_projections.txt" target="_blank">qui</a>.
 ```python
 with open("all_perc.txt", "w") as file0 :
     for i in range(len(points_list)) :
         file0.write("{}\t{}\n".format(points_list[i],perc[i]))
 ```
-così è possibile caricare indici delle patch e relative percentuali direttamente da tale file.
+così è possibile caricare indici delle patch e relative percentuali direttamente dal file.
 ```python
 points_list = np.loadtxt("./risultati/all_perc.txt", usecols=0, unpack=True)
 perc = np.loadtxt("./risultati/all_perc.txt", usecols=1, unpack=True)
