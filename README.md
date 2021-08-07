@@ -33,6 +33,7 @@ Il primo metodo (funzione `CreatePlane_Weigths`) costruisce una griglia in cui i
 <img src="img/Point_19841_Weigths.png" width=700px>
 </p>
 <p align="center"><i>Figura 3</i>: Media e varianza di due patch (una per riga) prodotte con il primo metodo.</p>
+
 Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costruita in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Gli stessi esempi di Figura 3 prodotti con tale metodo sono visibili in Figura 4. 
 <p align="center">
 <img src="img/Point_5000_Projections.png" width=700px>
