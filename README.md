@@ -7,15 +7,15 @@ Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, 
 
 ## Selezione di una patch
 L'intera superficie proteica studiata è visibile in Figura 0.
-<p align="center"><img src="img/entire_protein.png" width=700px></p>
+<p align="center"><img src="img/entire_protein.png" width=600px></p>
 <p align="center"><i>Figura 0</i>: L'intera superficie proteica in 3D.</p>
 
 Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto della superficie `center` e un raggio `Rs`.
-<p align="center"><img src="img/Patch_Point5000.png" width=700px></p>
-<p align="center"><i>Figura 1</i>: Una possibile patch della superficie.</p>
+<p align="center"><img src="img/Patch_Point5000.png" width=480px><img src="img/Patch_Point19841.png" width=480px></p>
+<p align="center"><i>Figura 1</i>: Patch del punto 5000 (sinistra) e patch del punto 19841 (destra) della superficie.</p>
 
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
-<p align="center"><img src="img/Cone_Point5000.png" width=700px></p>
+<p align="center"><img src="img/Cone_Point5000.png" width=600px></p>
 <p align="center"><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).</p>
 
 ## Creazione del piano di fit
