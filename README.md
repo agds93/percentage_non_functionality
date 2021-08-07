@@ -16,7 +16,7 @@ Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. 
 
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
 <p align="center"><img src="img/Cone_Point5000.png" width=600px></p>
-<p align="center"><i>Figura 2</i>: Patch (rosso) all'interno del cono (blu).</p>
+<p align="center"><i>Figura 2</i>: Una patch (rosso) all'interno del cono (blu).</p>
 
 ## Creazione del piano di fit
 Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npixel`, in cui ogni cella è un pixel. All'interno di ogni pixel è presente il valore della media o della varianza delle distanze tra i relativi punti della patch e l'origine C del cono. Di conseguenza le possibili griglie da creare sono due:
