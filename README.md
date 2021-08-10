@@ -27,10 +27,10 @@ Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npix
 
 Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).  
 Per creare il piano della media e della varianza di tali distanze ci sono due metodi.  
-Il primo metodo (funzione `CreatePlane_Weigths`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`.
+Il primo metodo (funzione `CreatePlane_Weights`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`.
 <p align="center">
-<img src="img/Point_5000_Weigths.png" width=700px>
-<img src="img/Point_19841_Weigths.png" width=700px>
+<img src="img/Point_5000_Weights.png" width=700px>
+<img src="img/Point_19841_Weights.png" width=700px>
 </p>
 <p align="center"><i>Figura 3</i>: Media e varianza di due patch (una per riga) prodotte con il primo metodo.</p>
 
@@ -43,7 +43,7 @@ Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costrui
 
 ## Percentuale di non funzionalità
 La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4.  
-I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weigths` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
+I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weights` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
 <p align="center"><img src="img/all_perc.png" width=800px></p>
 <p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
@@ -151,7 +151,7 @@ Per creare la matrice della media `plane` e delle varianza `plane_var` con il pr
 * la quota `z` del punto C.
 * il numero di pixel per lato della griglia `Npixel`.
 ```python
-def CreatePlane_Weigths(label, patch, z_c, Np = 20) :
+def CreatePlane_Weights(label, patch, z_c, Np = 20) :
     rot_p = np.copy(patch)
     rot_p[:,2] -= z_c
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + rot_p[:,2]**2)
@@ -255,7 +255,7 @@ Per calcolare la percentuale `perc` di varianze più alte di una certa soglia co
 * la soglia `threshold` scelta.
 
 ```python
-def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold) :
+def PercHigherVariance_Weights(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
     rot_patch, _ = surf_a_obj.PatchReorientNew(patch, 1)
     z = surf_a_obj.FindOrigin(rot_patch)
@@ -275,7 +275,7 @@ def PercHigherVariance_Weigths(label, Npixel, surf_a_obj, center, Dpp, threshold
     else :
         return plane, plane_var, perc
 ```
-Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo, infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weigths`.
+Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo, infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weights`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
@@ -304,7 +304,7 @@ step = 1
 points_list = np.arange(0,limit,step)
 perc = np.zeros((len(points_list)))
 for i in range(len(points_list)) :
-    _, _, perc[i] = PercHigherVariance_Weigths(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)  
+    _, _, perc[i] = PercHigherVariance_Weights(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)  
 print("Number of patches =",len(perc))
 ```
 Per calcolare la `perc` di ogni punto della superficie con il secondo metodo si usa
@@ -318,7 +318,7 @@ for i in range(len(points_list)) :
 print("Number of patches =",len(perc))
 ```
 Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file:
-* i valori trovati con `PercHigherVariance_Weigths` sono visibili <a href="/data/all_perc.txt" target="_blank">qui</a>.
+* i valori trovati con `PercHigherVariance_Weights` sono visibili <a href="/data/all_perc.txt" target="_blank">qui</a>.
 * i valori trovati con `PercHigherVariance_Projections` sono visibili <a href="/data/all_perc_projections.txt" target="_blank">qui</a>.
 ```python
 with open("all_perc.txt", "w") as file0 :
