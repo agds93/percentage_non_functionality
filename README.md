@@ -369,7 +369,7 @@ La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono:
 * la matrice della media.
 * la matrice della varianza.
 * le mappe dei <a href="https://matplotlib.org/stable/tutorials/colors/colormaps.html" target="_blank">colori</a> da utilizzare.
-* il nome del file di output.
+* il nome del file di output con opportuna estensione.
 ```python
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
     mx1 = pm
@@ -411,10 +411,10 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
     fig.tight_layout()
     if name != "" or name == "default" :
         if name == "default" :
-            n = "MeanVariance_Patch{}_Dpp{}_perc{}".format(center, Dpp, perc)
+            n = "MeanVariance_Patch{}_perc{}.pdf".format(center, Dpp, perc)
         else :
             n = name
-        mpl.savefig("{}.pdf".format(n))
+        mpl.savefig("{}".format(n))
         print("The figure was generated.")
 ```
 Il grafico in Figura 4-5 viene prodotto da
