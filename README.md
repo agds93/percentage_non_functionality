@@ -7,14 +7,17 @@ Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, 
 
 ## Selezione di una patch
 L'intera superficie proteica studiata è visibile in Figura 0.
+
 <p align="center"><img src="img/entire_protein.png" width=600px></p>
 <p align="center"><i>Figura 0</i>: L'intera superficie proteica in 3D.</p>
 
 Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto della superficie `center` e un raggio `Rs`.
+
 <p align="center"><img src="img/Patch_Point5000.png" width=480px><img src="img/Patch_Point19841.png" width=480px></p>
 <p align="center"><i>Figura 1</i>: Patch del punto 5000 (sinistra) e patch del punto 19841 (destra) della superficie.</p>
 
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
+
 <p align="center"><img src="img/Cone_Point5000.png" width=600px></p>
 <p align="center"><i>Figura 2</i>: Una patch (rosso) all'interno del cono (blu).</p>
 
@@ -27,14 +30,16 @@ Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npix
 
 Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).  
 Per creare il piano della media e della varianza di tali distanze ci sono due metodi.  
-Il primo metodo (funzione `CreatePlane_Weights`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`.
+Il primo metodo (funzione `CreatePlane_Weights`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`. Questo metodo può essere chiamato metodo Weights.
+
 <p align="center">
 <img src="img/Point_5000_Weights.png" width=700px>
 <img src="img/Point_19841_Weights.png" width=700px>
 </p>
 <p align="center"><i>Figura 3</i>: Media e varianza di due patch (una per riga) prodotte con il primo metodo.</p>
 
-Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costruita in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Gli stessi esempi di Figura 3 prodotti con tale metodo sono visibili in Figura 4. 
+Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costruita in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Gli stessi esempi di Figura 3 prodotti con tale metodo sono visibili in Figura 4. Questo metodo può essere chiamato metodo Projections.
+
 <p align="center">
 <img src="img/Point_5000_Projections.png" width=700px>
 <img src="img/Point_19841_Projections.png" width=700px>
@@ -44,6 +49,7 @@ Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costrui
 ## Percentuale di non funzionalità
 La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4.  
 I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weights` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
+
 <p align="center"><img src="img/all_perc.png" width=800px></p>
 <p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il primo metodo per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
