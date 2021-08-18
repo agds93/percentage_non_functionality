@@ -13,7 +13,7 @@ L'intera superficie proteica studiata è visibile in Figura 0.
 
 Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto della superficie `center` e un raggio `Rs`.
 
-<p align="center"><img src="img/Patch_Point5000.png" width=480px><img src="img/Patch_Point19841.png" width=480px></p>
+<p align="center"><img src="img/Patch_Point5000.png" width=450px><img src="img/Patch_Point19841.png" width=450px></p>
 <p align="center"><i>Figura 1</i>: Patch del punto 5000 (sinistra) e patch del punto 19841 (destra) della superficie.</p>
 
 Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
