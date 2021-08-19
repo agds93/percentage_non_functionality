@@ -51,7 +51,7 @@ La percentuale di non funzionalità `perc` di una patch coincide con la percentu
 I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weights` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
 
 <p align="center"><img src="img/all_perc.png" width=800px></p>
-<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il il metodo <i>Weights</i> per ogni punto della superficie.</p>
+<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il metodo <i>Weights</i> per ogni punto della superficie.</p>
 <p align="center"><img src="img/all_perc_projections.png" width=800px></p>
 <p align="center"><i>Figura 5</i>: Percentuale di non funzionalità con il metodo <i>Projections</i> per ogni punto della superficie.</p>
 
