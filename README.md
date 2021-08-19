@@ -1,72 +1,71 @@
-**Autore**: Alessandro Giudice    
-**Collaboratore**: Samuel Santhosh Gomez  
+**Author**: Alessandro Giudice    
+**Contributor**: Samuel Santhosh Gomez  
 
-# Percentuale di non funzionalità di una patch in disco unitario
-Di seguito riporto la procedura per calcolare la percentuale di non funzionalità di una specifica zona di una superficie proteica in 3D.  
-Il `testo` scritto in questa maniera rappresenta le variabili del codice usato, visibile in appendice.   
+# Percentage of non-functionality of a patch in a unit disk
+Below I report the procedure to calculate the percentage of non-functionality of a specific area of a protein surface in 3D.  
+The `text` written in this way represents the variables of the code used, that is visible in the appendix or <a href="https://github.com/agds93/percentage_non_functionality/tree/main/code" target="_blank">here</a>.  
 
-## Selezione di una patch
-L'intera superficie proteica studiata è visibile in Figura 0.
+## Selecting a patch
+The entire protein surface studied is visible in Figure 0.
 
-<p align="center"><img src="img/entire_protein.png" width=600px></p>
-<p align="center"><i>Figura 0</i>: L'intera superficie proteica in 3D.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/entire_protein.png" width=600px></p>
+<p align="center"><i>Figure 0</i>: The entire protein surface in 3D.</p>
 
-Una patch, come quella in Figura 1, è un gruppo di punti di una superficie 3D. Tali punti sono selezionati come punti della patch se essi hanno una distanza reciproca non superiore al valore soglia `Dpp`, e se sono contenuti in una sfera avente come centro l'indice di un punto della superficie `center` e un raggio `Rs`.
+A patch, like the one in Figure 1, is a group of points on a 3D surface. These points are selected as patch points if they have a mutual distance not exceeding the threshold value `Dpp`, and if they are contained in a sphere having as its center the index of a point on the surface `center` and a radius `Rs`.
 
-<p align="center"><img src="img/Patch_Point5000.png" width=450px><img src="img/Patch_Point19841.png" width=450px></p>
-<p align="center"><i>Figura 1</i>: Patch del punto 5000 (sinistra) e patch del punto 19841 (destra) della superficie.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Patch_Point5000.png" width=440px><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Patch_Point19841.png" width=440px></p>
+<p align="center"><i>Figure 1</i>: Patch of point 5000 (left) and patch of point 19841 (right) of the surface.</p>
 
-Poi la patch selezionata deve essere inglobata in un cono come in Figura 2. Tale cono è posto lungo l'asse z, con origine nel punto C=(0,0,`z`), in modo che l'angolo massimo tra l'asse perpendicolare e la secante che connette C a un punto della superficie (o della patch) sia uguale a `theta_max = 45`.
+The selected patch must be rotated to be perpendicular to the xy plane, then it is incorporated in a cone as in Figure 2. This cone is placed along the z axis, with origin at the point C = (0,0,`z`), so that the maximum angle between the perpendicular axis and the secant connecting C to a point on the surface (or patch) is equal to `theta_max = 45`.
 
-<p align="center"><img src="img/Cone_Point5000.png" width=600px></p>
-<p align="center"><i>Figura 2</i>: La patch (rosso) del punto 5000 all'interno del cono (blu).</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Cone_Point5000.png" width=600px></p>
+<p align="center"><i>Figure 2</i>: The rotated patch (red) of the point 5000 inside the cone (blue).</p>
 
-## Creazione del piano di fit
-Ogni punto della patch viene proiettato su una griglia quadrata 2D di lato `Npixel`, in cui ogni cella è un pixel. All'interno di ogni pixel è presente il valore della media o della varianza delle distanze tra i relativi punti della patch e l'origine C del cono. Di conseguenza le possibili griglie da creare sono due:
+## Creation of the fit plan
+Each point of the patch is projected onto a 2D square grid with an `Npixel` side, in which each cell is a pixel. Inside each pixel there is the value of the mean or variance of the distances between the relative points of the patch and the origin C of the cone. Consequently, there are two possible grids to create:
 
-* la matrice delle medie delle distanze in ogni pixel, come nella parte sinistra delle Figure 3-4.
+* the matrix of the means of the distances in each pixel, as in the left part of Figures 3-4.
 
-* la matrice delle varianze delle distanze in ogni pixel, come nella parte destra delle Figure 3-4.
+* the matrix of the variances of the distances in each pixel, as in the right part of Figures 3-4.
 
-Le distanze utilizzate per ogni matrice nelle Figure 3-4 sono solo quelle contenute in un disco unitario (distanze minori o uguali a uno).  
-Per creare il piano della media e della varianza di tali distanze ci sono due metodi.  
-Il primo metodo (funzione `CreatePlane_Weights`) costruisce una griglia in cui il valore (media o varianza) di ogni pixel si basa sulle distanze tra i punti della patch e il punto C. La distanza relativa ad un punto della patch finisce in un pixel se il punto si trova ortogonalmente sopra tale pixel. Due esempi di tale metodo sono visibili in Figura 3. Le parti alta e bassa della figura sono riferite rispettivamente alla patch con `center = 5000` e alla patch con `center = 19841`. Questo metodo può essere chiamato metodo *Weights*.
-
-<p align="center">
-<img src="img/Point_5000_Weights.png" width=700px>
-<img src="img/Point_19841_Weights.png" width=700px>
-</p>
-<p align="center"><i>Figura 3</i>: Media e varianza di due patch (una per riga) prodotte con il primo metodo (metodo <i>Weights</i>).</p>
-
-Nel secondo metodo (funzione `CreatePlane_Projections`) la griglia viene costruita in modo che ogni pixel abbia un valore (media o varianza) basato sulle distanze tra i punti della patch e il punto C. A differenza del primo metodo, la distanza relativa ad un punto della patch finisce in un pixel se il segmento che congiunge un punto della patch e il punto C intercetta tale pixel. Gli stessi esempi di Figura 3 prodotti con tale metodo sono visibili in Figura 4. Questo metodo può essere chiamato metodo *Projections*.
+The distances used for each matrix in Figures 3-4 are only those contained in a unit disk (distances less than or equal to one).  
+There are two methods to create the plane of the mean and variance of these distances.  
+The first method (`CreatePlane_Weights` function) builds a grid in which the value (mean or variance) of each pixel is based on the distances between the patch points and the point C. The relative distance to a patch point ends in one pixel if the point is orthogonally above that pixel. Two examples of this method are shown in Figure 3. The top and bottom parts of the figure refer to the patch with `center = 5000` and the patch with` center = 19841` respectively. This method can be called the *Weights* method.
 
 <p align="center">
-<img src="img/Point_5000_Projections.png" width=700px>
-<img src="img/Point_19841_Projections.png" width=700px>
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_5000_Weights.png" width=700px>
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_19841_Weights.png" width=700px>
 </p>
-<p align="center"><i>Figura 4</i>: Media e varianza di due patch (una per riga) prodotte con il secondo metodo (metodo <i>Projections</i>).</p>
+<p align="center"><i>Figure 3</i>: Mean and variance of two patches (one per row) produced with the first method (<i>Weights</i> method).</p>
 
-## Percentuale di non funzionalità
-La percentuale di non funzionalità `perc` di una patch coincide con la percentuale di pixels della matrice che contengono una varianza superiore ad una soglia `threshold`. Il valore trovato di `perc` e il valore scelto per `threshold` è riportato nel titolo della parte destra dei grafici delle Figure 3-4. Inoltre il valore della soglia è indicato anche sulla relativa barra colorata di tali figure. Per ogni pixel, se la varianza è inferiore a tale soglia viene mostrato un colore uniforme (patch con `center = 5000` in Figura 3-4), in caso contrario viene visualizzato un colore più o meno scuro per un valore alto o basso della varianza (patch con `center = 19841` in Figura 3-4).  
-I valori di `perc` sono calcolati con le funzioni `PercHigherVariance_Weights` e `PercHigherVariance_Projections`. Tali valori per ogni punto della superficie sono visibili in Figura 4 e Figura 5 rispettivamente per primo e secondo metodo.
+In the second method (`CreatePlane_Projections` function) the grid is constructed so that each pixel has a value (mean or variance) based on the distances between the patch points and the point C. Unlike the first method, the distance relative to a patch point ends in a pixel if the segment joining a patch point and point C intercepts that pixel. The same examples of Figure 3 produced with this method are shown in Figure 4. This method can be called the *Projections* method.
 
-<p align="center"><img src="img/all_perc.png" width=800px></p>
-<p align="center"><i>Figura 4</i>: Percentuale di non funzionalità con il metodo <i>Weights</i> per ogni punto della superficie.</p>
-<p align="center"><img src="img/all_perc_projections.png" width=800px></p>
-<p align="center"><i>Figura 5</i>: Percentuale di non funzionalità con il metodo <i>Projections</i> per ogni punto della superficie.</p>
+<p align="center">
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_5000_Projections.png" width=700px>
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_19841_Projections.png" width=700px>
+</p>
+<p align="center"><i>Figure 4</i>: Mean and variance of two patches (one per row) produced with the second method (<i>Projections</i> method).</p>
 
-Come mostrato in Figura 6-7, il secondo metodo produce piani di fit con una percentuale di non-funzionalità generalmente più bassa rispetto al primo metodo.
+## Percentage of non-functionality
+The percentage of non-functionality `perc` of a patch coincides with the percentage of pixels in the matrix that contain a variance greater than a `threshold`. The found value of `perc` and the value chosen for `threshold` are shown in the title of the right part of the graphs in Figures 3-4. Furthermore, the threshold value is also indicated on the relative colored bar of these figures. For each pixel, if the variance is less than this threshold, a uniform color is shown (patch with `center = 5000` in Figure 3-4), otherwise a more or less dark color is displayed for a high or low value of the variance (patch with `center = 19841` in Figure 3-4).  
+The values of `perc` are calculated with the functions `PercHigherVariance_Weights` and `PercHigherVariance_Projections`. These values for each point of the surface are visible in Figure 4 and Figure 5 for the first and second method respectively.
 
-<p align="center"><img src="img/hist_01.png" width=800px></p>
-<p align="center"><i>Figura 6</i>: Istogramma della percentuale di non funzionalità con il metodo <i>Weights</i>.</p>
-<p align="center"><img src="img/hist_02.png" width=800px></p>
-<p align="center"><i>Figura 7</i>: Istogramma della percentuale di non funzionalità con il metodo <i>Projections</i>.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/all_perc.png" width=800px></p>
+<p align="center"><i>Figura 4</i>: Percentage of non-functionality with the <i>Weights</i> method for each point of the surface.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/all_perc_projections.png" width=800px></p>
+<p align="center"><i>Figura 5</i>: Percentage of non-functionality with the <i>Projections</i> method for each point of the surface.</p>
 
-## Appendice
-### Librerie e moduli
-Il codice scritto è stato eseguito con <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> utilizzando `python 3.8`.  
-I moduli python usati, installati tramite 
-<a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a> (compreso `jupyterlab`), sono elencati sotto.
+As shown in Figure 6-7, the second method produces fit plans with a generally lower percentage of non-functionality than the first method.
+
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/hist_01.png" width=800px></p>
+<p align="center"><i>Figura 6</i>: Histogram of the percentage of non-functionality with the <i>Weights</i> method.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/hist_02.png" width=800px></p>
+<p align="center"><i>Figura 7</i>: Histogram of the percentage of non-functionality with the <i>Projections</i> method.</p>
+
+## Appendix
+### Libraries and modules
+The code written was executed with <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> using `python 3.8`.  
+The python modules used, installed via <a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a> (including `jupyterlab`), are listed below.
 ```python
 import os, sys
 import numpy as np
@@ -75,40 +74,35 @@ import scipy as sp
 import pandas as pd
 ```
 ```python
-from mayavi import mlab
+from mayavi import mlab  
 ```
-Il modulo `mayavi`, in particolare `mlab`, è necessario per visualizzare le superfici 3D in una finestra Qt, così da produrre la Figura 0-1-2.  
-Mentre le librerie di base sono
+The `mayavi` module, specifically` mlab`, is needed to display 3D surfaces in a Qt window, so as to produce Figure 0-1-2.
+While the basic libraries are  
 ```python
-sys.path.append("./bin/")
-import ZernikeFunc as ZF
-import SurfaceFunc as SF
+sys.path.append("./ bin /")  
+import ZernikeFunc as ZF  
+import SurfaceFunc as SF  
 ```
-scritte da <a href="https://scholar.google.it/citations?user=hjkTN0YAAAAJ&hl=it" target="_blank">Mattia Miotto</a>.
-
-### Parametri
-I valori dei parametri usati per selezionare una patch e creare il piano di fit sono
+written by <a href="https://scholar.google.it/citations?user=hjkTN0YAAAAJ&hl=it" target="_blank">Mattia Miotto</a>.
+### Parameters
+The parameter values used to select a patch and create the fit plan are
 ```python
-Npixel = 25    # il lato del piano in pixel
-Dpp = 0.5      # la distanza tra i punti della stessa patch
-Rs = 6         # il raggio della sfera che include la patch
-threshold = 5  # valore soglia per stabilire se la varianza è alta
+Npixel = 25    # the side of the plane in pixels
+Dpp = 0.5      # the distance between points of the same patch
+Rs = 6         # the radius of the sphere that includes the patch
+threshold = 5  # threshold value to determine if the variance is high
 ```
-I valori sono in ångström, tranne `Npixel`.  
-L'indice del punto centrale della patch usato per Figura 1, Figura 2, e per i grafici nella parte alta della Figura 3-4 è
+Values are in ångström units, except `Npixel`.  
+The patch center point index used for Figure 1, Figure 2, and for the graphs at the top of Figure 3-4 is
 ```python
 center = 5000
 ```
-invece quello usato per i grafici nella parte bassa della Figura 3-4 è
+instead the one used for the graphs at the bottom of Figure 3-4 is
 ```python
 center = 19841
 ```
-### Caricare la superficie proteica
-Una volta scelta la proteina da studiare bisogna scaricare il relativo file *.pdb* dalla
-<a href="https://www.rcsb.org/" target="_blank">Protein Data Bank</a>
-da cui creare un file *.dms* (per esempio con il tool
-<a href="https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/midas/dms1.html" target="_blank">dms</a>
-), contenente una serie di dati su atomi e punti della superficie.
+### Load the protein surface
+Once the protein to be studied has been chosen, the relative *.pdb* file must be downloaded from the <a href="https://www.rcsb.org/" target="_blank">Protein Data Bank</a> from which to create a *.dms* file (for example with the tool <a href="https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/midas/dms1.html" target="_blank">dms</a>), containing a series of data on atoms and points on the surface.
 ```python
 surf_name_a = "./data/4bs2_RRM2.dms"
 surf_a_ = pd.read_csv(surf_name_a)  
@@ -117,45 +111,45 @@ print("Npoints", l_a)
 surf_a = np.zeros((l_a, 6))
 surf_a[:,:] = surf_a_[["x", "y", "z", "Nx", "Ny", "Nz"]]
 ```
-dove `surf_name_a` è il percorso del file *.dms* usato, disponibile <a href="data/4bs2_RRM2.dms" target="_blank">qui</a>.  
-La matrice relativa all'intera superficie `surf_a` deve essere inizializzato come oggetto della classe `Surface`: 
+where `surf_name_a` is the path to the *.dms* file used, available here .  
+The array relative to the entire `surf_a` surface must be initialized as an object of the `Surface` class: 
 ```python
 surf_a_obj = SF.Surface(surf_a[:,:], patch_num = 0, r0 = Rs, theta_max = 45)
 ```
-Dopo aver caricato i punti della superficie completa, per graficare l'intera superficie proteica come in Figura 0 si usa
+After loading the points of the complete surface, to plot the entire protein surface as in Figure 0 is used
 ```python
 res1, c = SF.ConcatenateFigPlots([surf_a_obj.surface[:,:3]])
 SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
 ```
-### Selezione di una patch
-Una patch è costruita in base ai parametri scelti tramite
+### Selecting a patch
+A patch is built based on the parameters chosen via
 ```python
-patch, _ = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
+patch, _ = surf_a_obj.BuildPatch(point_pos = center, Dmin = Dpp)
 ```
-Per produrre il grafico in Figura 1, con `center = 5000`, si usa:
+To produce the graph in Figure 1, with `center = 5000`, we use:
 ```python
-res1, c = SF.ConcatenateFigPlots([patch[:,:3]])
-SF.Plot3DPoints(res1[:,0], res1[:,1], res1[:,2], c, 0.3)
+res1, c = SF.ConcatenateFigPlots([patch [:,: 3]])
+SF.Plot3DPoints(res1[:, 0], res1[:, 1], res1[:, 2], c, 0.3)
 ```
-Per essere utilizzabile, la patch in Figura 1 deve essere ruotata (`patch` diventa `rot_patch`) in modo che sia perpendicolare al piano xy. Questo si può fare con
+To be usable, the patch in Figure 1 must be rotated (`patch` becomes `rot_patch`) so that it is perpendicular to the xy plane. This can be done with
 ```python 
 rot_patch, rot_patch_nv = surf_a_obj.PatchReorientNew(patch, +1)
 ```
-dove il parametro `+1` (`-1`) indica che i versori normali `rot_patch_nv` sono rivolti verso l'alto (basso).  
-Per trovare la quota `z` dell'origine C del cono che ingloba la patch si usa
+where the parameter `+ 1` (`-1`) indicates that the normal `rot_patch_nv` vector units are facing up (down).  
+To find the `z` dimension of the origin C of the cone that encompasses the patch we use
 ```python
 z = surf_a_obj.FindOrigin(rot_patch, 0)
 ```
-dove se si sostituisce `0` con `1` si produce il grafico della patch inglobata dentro il cono. La Figura 2 si ottiene con `center = 5000`.
-### Creazione del piano di fit
-Per creare la matrice della media `plane` e delle varianza `plane_var` con il primo metodo si utilizza la funzione seguente. L'input è formato da:
-* una label che determina se restituire la matrice di media e/o la varianza:
-    * "mean" restituisce solo i valori medi
-    * "var" produce solo le varianze
-    * "" o altro fornisce valori medi e varianze
-* la patch ruotata.
-* la quota `z` del punto C.
-* il numero di pixel per lato della griglia `Npixel`.
+where replacing `0` with` 1` produces the graph of the patch embedded inside the cone. Figure 2 is obtained with `center = 5000`.
+### Creation of the fit plan
+To create the matrix of the `plane` mean and the `plane_var` variance with the first method, use the following function. The input consists of:
+* a label that determines whether to return the mean and/or variance matrix:
+    * "mean" returns only average values
+    * "var" produces variances only
+    * "" or other gives mean and variances values
+* the patch rotated.
+* the `z` dimension of point C.
+* the number of pixels per side of the `Npixel` grid.
 ```python
 def CreatePlane_Weights(label, patch, z_c, Np = 20) :
     rot_p = np.copy(patch)
@@ -199,10 +193,10 @@ def CreatePlane_Weights(label, patch, z_c, Np = 20) :
         return plane_var, weigths, dist_plane, thetas
     else :
         return plane, plane_var, weigths, dist_plane, thetas
-``` 
-Invece per creare la matrice della media `plane` e delle varianza `plane_var` con il secondo metodo si utilizza la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo.
+```
+Instead to create the matrix of the `plane` mean and the `plane_var` variance with the second method we use the following function. The inputs are the same as the function used for the first method.
 ```python
- def CreatePlane_Projections(label, patch, z_c, Np = 20) :
+def CreatePlane_Projections(label, patch, z_c, Np = 20) :
     rot_p = np.copy(patch)
     weigths = np.sqrt(rot_p[:,0]**2 + rot_p[:,1]**2 + (rot_p[:,2]-z_c)**2)
     slope_angle = np.arcsin( (rot_p[:,2]-z_c) / weigths[:] )  
@@ -248,17 +242,17 @@ Invece per creare la matrice della media `plane` e delle varianza `plane_var` co
     else :
         return plane, plane_var, weigths, dist_plane, thetas
 ```
-### Percentuale di non funzionalità
-Per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il primo metodo si usa la funzione seguente. L'input è formato da:
-* una label che determina se restituire, oltre a `perc`, la matrice di media e/o varianza:
-    * "mean" restituisce solo i valori medi
-    * "var" produce solo le varianze
-    * "" o altro fornisce valori medi e varianze
-* il numero di pixel per lato della griglia `Npixel`.
-* l'oggetto superficie `surf_a_obj`.
-* l'indice `center` del punto della superficie scelto come centro della patch.
-* la distanza `Dpp` tra i punti della patch.
-* la soglia `threshold` scelta.
+### Percentage of non-functionality
+To calculate the percentage `perc` of variances higher than a certain `threshold` with the first method we use the following function. The input consists of:
+* a label that determines whether to return, in addition to `perc`, the mean and/or variance matrix:
+    * "mean" returns only average values
+    * "var" produces variances only
+    * "" or other gives mean values and variances
+* the number of pixels per side of the `Npixel` grid.
+* the `surf_a_obj` surface object.
+* the `center` index of the surface point chosen as the patch center.
+* the distance `Dpp` between the points of the patch.
+* the chosen `threshold`.
 
 ```python
 def PercHigherVariance_Weights(label, Npixel, surf_a_obj, center, Dpp, threshold) :
@@ -281,7 +275,7 @@ def PercHigherVariance_Weights(label, Npixel, surf_a_obj, center, Dpp, threshold
     else :
         return plane, plane_var, perc
 ```
-Invece per calcolare la percentuale `perc` di varianze più alte di una certa soglia con il secondo metodo si usa la funzione seguente. Gli input sono gli stessi della funzione utilizzata per il primo metodo, infatti l'unica differenza è l'utilizzo di `CreatePlane_Projections` invece di `CreatePlane_Weights`.
+Instead to calculate the percentage `perc` of variances higher than a certain threshold with the second method we use the following function. The inputs are the same as the function used for the first method, in fact the only difference is the use of `CreatePlane_Projections` instead of` CreatePlane_Weights`.
 ```python
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
@@ -303,7 +297,7 @@ def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, thres
     else :
         return plane, plane_var, perc
 ```
-Per calcolare la `perc` di ogni punto della superficie con il primo metodo si usa
+To calculate the `perc` of each point on the surface with the first method we use
 ```python
 limit = l_a
 step = 1
@@ -313,7 +307,7 @@ for i in range(len(points_list)) :
     _, _, perc[i] = PercHigherVariance_Weights(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)  
 print("Number of patches =",len(perc))
 ```
-Per calcolare la `perc` di ogni punto della superficie con il secondo metodo si usa
+To calculate the `percent` of each point on the surface with the second method we use
 ```python
 limit = l_a
 step = 1
@@ -323,20 +317,20 @@ for i in range(len(points_list)) :
     _, _, perc[i] = PercHigherVariance_Projections(Npixel, Rs, surf_a_obj, points_list[i], Dpp, threshold)
 print("Number of patches =",len(perc))
 ```
-Tale codice impiega molto tempo per essere eseguito quindi i risultati sono salvati su un file:
-* i valori trovati con `PercHigherVariance_Weights` sono visibili <a href="/data/all_perc.txt" target="_blank">qui</a>.
-* i valori trovati con `PercHigherVariance_Projections` sono visibili <a href="/data/all_perc_projections.txt" target="_blank">qui</a>.
+This code takes a long time to run so the results are saved to a file:
+* values found with `PercHigherVariance_Weights` are visible <a href="/data/all_perc.txt" target="_blank">here</a>.
+* values found with `PercHigherVariance_Projections` are visible <a href="/data/all_perc_projections.txt" target="_blank">here</a>.
 ```python
 with open("all_perc.txt", "w") as file0 :
     for i in range(len(points_list)) :
         file0.write("{}\t{}\n".format(points_list[i],perc[i]))
 ```
-così è possibile caricare indici delle patch e relative percentuali direttamente dal file.
+thus it is possible to load patch indexes and relative percentages directly from the file.
 ```python
 points_list = np.loadtxt("./risultati/all_perc.txt", usecols=0, unpack=True)
 perc = np.loadtxt("./risultati/all_perc.txt", usecols=1, unpack=True)
 ```
-Per trovare i massimi e i minimi di `perc` in uno spefico intervallo si usa 
+To find the highs and lows of `perc` in a specified interval, use 
 ```python
 def zone_extremes(vect, begin, end) :
     if begin == 0 :
@@ -352,24 +346,24 @@ def zone_extremes(vect, begin, end) :
     vmin = np.amin(vect_lim)
     return imax, vmax, imin, vmin
 ```
-### Utilità
-Segue la funzione che restituisce una matrice con elementi non nulli solo nelle celle in cui la maschera ha valore True. Essa è necessaria in `PlotMeanVariancePatch` per graficare un colore uniforme per i valori della varianza sotto la soglia scelta.
+### Utilities
+This is followed by the function that returns an array with non-null elements only in cells where the mask is True. It is needed in the `PlotMeanVariancePatch` to plot a uniform color for variance values below the chosen threshold.
 ```python
-def MatrixMasked(matrix, mask) :
+def MatrixMasked(matrix, mask):
     matrix_new = np.where(mask, matrix, 0)
     return matrix_new
 ```
-### Altri Grafici
-La seguente funzione fornisce i grafici delle Figure 3-4. Gli input sono:
-* l'indice del punto centrale della patch `center`.
-* la distanza tra i punti della patch `Dpp`.
-* il raggio `Rs` della sfera che include la patch.
-* il valore trovato di `perc`.
-* il valore di soglia scelto.
-* la matrice della media.
-* la matrice della varianza.
-* le mappe dei <a href="https://matplotlib.org/stable/tutorials/colors/colormaps.html" target="_blank">colori</a> da utilizzare.
-* il nome del file di output con opportuna estensione.
+### Other Charts
+The following function provides the graphs of Figures 3-4. The inputs are:
+* the index of the center point of the `center` patch.
+* the distance between the points of the `Dpp` patch.
+* the radius `Rs` of the sphere that includes the patch.
+* the found value of `perc`.
+* the chosen threshold value.
+* the matrix of the mean.
+* the variance matrix.
+* the color maps to use.
+* the name of the output file with the appropriate extension.
 ```python
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
     mx1 = pm
@@ -417,7 +411,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
         mpl.savefig("{}".format(n))
         print("The figure was generated.")
 ```
-Il grafico in Figura 4-5 viene prodotto da
+The graph in Figure 4-5 is produced by
 ```python
 fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
 ax.set_xlim(0, len(perc))
@@ -435,7 +429,7 @@ ax.plot(points_list, perc, "o", markersize="0.4", rasterized=True)
 fig.tight_layout()
 mpl.savefig("all_perc.pdf")
 ```
-Il grafico in Figura 6-7 viene prodotto da
+The graph in Figure 6-7 is produced by
 ```python
 fig, ax = mpl.subplots(nrows=1, ncols=1, figsize=(8,4), facecolor="white", dpi=200)
 ax.set_title("Threshold = {} $\AA$, Points = {}, Pixels = {}, Dpp = {}, Rs = {}".format(threshold,len(points_list),Npixel,Dpp,Rs), fontsize="8")
