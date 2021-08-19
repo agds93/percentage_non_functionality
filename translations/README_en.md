@@ -38,3 +38,15 @@ The first method (`CreatePlane_Weights` function) builds a grid in which the val
 </p>
 <p align="center"><i>Figure 3</i>: Mean and variance of two patches (one per row) produced with the first method (<i>Weights</i> method).</p>
 
+In the second method (`CreatePlane_Projections` function) the grid is constructed so that each pixel has a value (mean or variance) based on the distances between the patch points and the point C. Unlike the first method, the distance relative to a patch point ends in a pixel if the segment joining a patch point and point C intercepts that pixel. The same examples of Figure 3 produced with this method are shown in Figure 4. This method can be called the *Projections* method.
+
+<p align="center">
+<img src="img/Point_5000_Projections.png" width=700px>
+<img src="img/Point_19841_Projections.png" width=700px>
+</p>
+<p align="center"><i>Figure 4</i>: Mean and variance of two patches (one per row) produced with the second method (<i>Projections</i> method).</p>
+
+## Percentage of non-functionality
+The percentage of non-functionality `perc` of a patch coincides with the percentage of pixels in the matrix that contain a variance greater than a `threshold`. The found value of `perc` and the value chosen for `threshold` are shown in the title of the right part of the graphs in Figures 3-4. Furthermore, the threshold value is also indicated on the relative colored bar of these figures. For each pixel, if the variance is less than this threshold, a uniform color is shown (patch with `center = 5000` in Figure 3-4), otherwise a more or less dark color is displayed for a high or low value of the variance (patch with `center = 19841` in Figure 3-4).  
+The values of `perc` are calculated with the functions `PercHigherVariance_Weights` and `PercHigherVariance_Projections`. These values for each point of the surface are visible in Figure 4 and Figure 5 for the first and second method respectively.
+
