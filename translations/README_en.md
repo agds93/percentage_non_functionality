@@ -41,8 +41,8 @@ The first method (`CreatePlane_Weights` function) builds a grid in which the val
 In the second method (`CreatePlane_Projections` function) the grid is constructed so that each pixel has a value (mean or variance) based on the distances between the patch points and the point C. Unlike the first method, the distance relative to a patch point ends in a pixel if the segment joining a patch point and point C intercepts that pixel. The same examples of Figure 3 produced with this method are shown in Figure 4. This method can be called the *Projections* method.
 
 <p align="center">
-<img src="img/Point_5000_Projections.png" width=700px>
-<img src="img/Point_19841_Projections.png" width=700px>
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_5000_Projections.png" width=700px>
+<img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/Point_19841_Projections.png" width=700px>
 </p>
 <p align="center"><i>Figure 4</i>: Mean and variance of two patches (one per row) produced with the second method (<i>Projections</i> method).</p>
 
@@ -50,3 +50,38 @@ In the second method (`CreatePlane_Projections` function) the grid is constructe
 The percentage of non-functionality `perc` of a patch coincides with the percentage of pixels in the matrix that contain a variance greater than a `threshold`. The found value of `perc` and the value chosen for `threshold` are shown in the title of the right part of the graphs in Figures 3-4. Furthermore, the threshold value is also indicated on the relative colored bar of these figures. For each pixel, if the variance is less than this threshold, a uniform color is shown (patch with `center = 5000` in Figure 3-4), otherwise a more or less dark color is displayed for a high or low value of the variance (patch with `center = 19841` in Figure 3-4).  
 The values of `perc` are calculated with the functions `PercHigherVariance_Weights` and `PercHigherVariance_Projections`. These values for each point of the surface are visible in Figure 4 and Figure 5 for the first and second method respectively.
 
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/all_perc.png" width=800px></p>
+<p align="center"><i>Figura 4</i>: Percentage of non-functionality with the <i>Weights</i> method for each point of the surface.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/all_perc_projections.png" width=800px></p>
+<p align="center"><i>Figura 5</i>: Percentage of non-functionality with the <i>Projections</i> method for each point of the surface.</p>
+
+As shown in Figure 6-7, the second method produces fit plans with a generally lower percentage of non-functionality than the first method.
+
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/hist_01.png" width=800px></p>
+<p align="center"><i>Figura 6</i>: Histogram of the percentage of non-functionality with the <i>Weights</i> method.</p>
+<p align="center"><img src="https://github.com/agds93/percentage_non_functionality/blob/main/img/hist_02.png" width=800px></p>
+<p align="center"><i>Figura 7</i>: Histogram of the percentage of non-functionality with the <i>Projections</i> method.</p>
+
+## Appendix
+### Libraries and modules
+The code written was executed with <a href="https://jupyterlab.readthedocs.io/en/stable/" target="_blank">JupyterLab</a> using `python 3.8`.  
+The python modules used, installed via <a href="https://pip.pypa.io/en/stable/" target="_blank">pip</a> (including `jupyterlab`), are listed below.
+```python
+import os, sys
+import numpy as np
+import matplotlib.pyplot as mpl
+import scipy as sp
+import pandas as pd
+```
+```python
+from mayavi import mlab  
+```
+The `mayavi` module, specifically` mlab`, is needed to display 3D surfaces in a Qt window, so as to produce Figure 0-1-2.
+While the basic libraries are  
+```python
+sys.path.append ("./ bin /")  
+import ZernikeFunc as ZF  
+import SurfaceFunc as SF  
+```
+written by <a href="https://scholar.google.it/citations?user=hjkTN0YAAAAJ&hl=it" target="_blank">Mattia Miotto</a>.
+### Parameters
