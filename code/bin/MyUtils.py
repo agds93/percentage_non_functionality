@@ -10,8 +10,8 @@ import ZernikeFunc as ZF
 import SurfaceFunc as SF
 
 
-# Versione modificata del metodo CreatePlane (vedi SurfaceFunc.py line 893).
-# essa oltre al piano con i valori medi, restituisce anche il piano con le varianze della patch scelta.
+# Modified version of the CreatePlane method (see SurfaceFunc.py line 893).
+# it, in addition to the plan with the average values, also returns the plan with the variances of the chosen patch.
 def CreatePlane_Weights(label, patch, z_c, Np = 20) :
 
     rot_p = np.copy(patch)
@@ -78,9 +78,9 @@ def CreatePlane_Weights(label, patch, z_c, Np = 20) :
 
 
 
-# Versione alternativa di CreatePlane_Weights.  
-# Questa volta le distanze sono raccolte in base alle intersezioni dei segmenti con tale piano.
-# Ogni segmento inizia da un punto della superficie e finisce sull'origine del cono.
+# Alternate version of CreatePlane_Weights.
+# This time the distances are collected based on the intersections of the segments with that plane.
+# Each segment starts at a point on the surface and ends at the cone origin. 
 def CreatePlane_Projections(label, patch, z_c, Np = 20) :
     
     rot_p = np.copy(patch)
@@ -155,25 +155,25 @@ def CreatePlane_Projections(label, patch, z_c, Np = 20) :
 
 
 
-# Funzione che restituisce una matrice con elementi nel disco unitario.
-# Essa è INUTILE perchè le funzioni CreatePlane costruiscono le matrici già all'interno del disco unitario.
-# TENERE per documentazione/sviluppo futuri
-# Utilizzare la funzione MatrixMasked per gli altri scopi
+# Function that returns an array with elements in the unit disk.
+# It is USELESS because the CreatePlane functions build arrays already inside the drive disk.
+# KEEP for future documentation / development
+# Use the MatrixMasked function for other purposes
 def MatrixOnUnitDisk(Npixel, matrix) :
     
-    # Inizializzo la classe Zernike2d
+    # Initialize the Zernike2d class
     ZernikeM = ZF.Zernike2d(matrix)
     
-    # Cambiamento di base della matrice nella base polare
+    # Change of base of the matrix in the polar base
     matrix_polar = ZernikeM.r
     
-    # Individuo quali distanze sono all'interno del disco unitario (minori o uguali a 1) tramite una maschera
+    # I identify which distances are inside the unit disk (less than or equal to 1) through a mask
     matrix_mask = (matrix_polar <= 1)
     
-    # Nuova matrice con valori non nulli solo nelle celle relative alle distanze nel disco unitario
+    # New matrix with non-null values ​​only in the cells relative to the distances in the unit disk
     matrix_new = np.where(matrix_mask, matrix, 0)
     
-    # Nota: L'ultima istruzione è equivalente a 
+    # Note: The last statement is equivalent to
     """
     matrix_new = np.zeros((Npixel,Npixel))
     for i in range(Npixel) :
@@ -189,8 +189,8 @@ def MatrixOnUnitDisk(Npixel, matrix) :
 
 
 
-# Funzione che restituisce una matrice con elementi non nulli solo nelle celle in cui la maschera ha valore True.
-# Essa è necessaria in PlotMeanVariancePatch per graficare un colore uniforme per i valori sotto la soglia scelta.
+# Function that returns an array with non-null elements only in cells where the mask is True.
+# It is needed in PlotMeanVariancePatch to plot a solid color for values below the chosen threshold.
 def MatrixMasked(matrix, mask) :
     matrix_new = np.where(mask, matrix, 0)
     return matrix_new
@@ -198,8 +198,8 @@ def MatrixMasked(matrix, mask) :
 
 
 
-# Funzione che restituisce la percentuale di varianze più alte di una certa soglia di una patch su un disco unitario.
-# Inoltre restituisce le relative media e varianza sul piano (necessari per l'input di PlotMeanVariancePatch)
+# Function that returns the percentage of variances higher than a certain threshold of a patch on a drive disk.
+# Also returns the relative mean and variance on the plane (required for PlotMeanVariancePatch input) 
 def PercHigherVariance_Weights(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
@@ -242,7 +242,7 @@ def PercHigherVariance_Weights(label, Npixel, surf_a_obj, center, Dpp, threshold
 
 
 
-# Versione di PercHigherVariance basato sulla funzione CreatePlane_Projections.
+# PercHigherVariance version based on CreatePlane_Projections function. 
 def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, threshold) :
     
     patch, mask = surf_a_obj.BuildPatch(point_pos=center, Dmin=Dpp)
@@ -285,12 +285,12 @@ def PercHigherVariance_Projections(label, Npixel, surf_a_obj, center, Dpp, thres
 
 
 
-# Funzione che produce il grafico:
-  # - La media delle distanze che cadono in ogni pixel in funzione della posizione (x,y)
-  # - La varianza delle distanze che cadono in ogni pixel in funzione della posizione (x,y)
-#NOTA: entrambe le matrici hanno elementi all'interno del cerchio unitario per costruzione
+# Function that produces the graph:
+   # - The average of the distances that fall in each pixel as a function of the position (x, y)
+   # - The variance of the distances that fall in each pixel as a function of the position (x, y)
+#NOTE: both matrices have elements within the unit circle by construction
 
-# Riferimenti: 
+# References: 
 # https://matplotlib.org/stable/tutorials/colors/colormaps.html
 # https://matplotlib.org/stable/gallery/misc/rasterization_demo.html 
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
@@ -351,7 +351,7 @@ def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
 
 
 
-# Funzione che restituisce indice e valore del massimo e del minimo di una porzione di array.
+# Function that returns the index and value of the maximum and minimum of a portion of an array. 
 def zone_extremes(vect, begin, end) :
     if begin == 0 :
         border = 0
@@ -369,10 +369,10 @@ def zone_extremes(vect, begin, end) :
 
 
 
-# Funzione che restituisce:
-# - la versione processata della matrice del piano delle medie, cioè senza zone vuote.
-# - la ricostruzione secondo Zernike di quest'ultima.
-# - i relativi cofficienti complessi di Zernike.
+# Function that returns:
+# - the processed version of the average plane matrix, ie without empty areas.
+# - the reconstruction according to Zernike of the latter.
+# - the related Zernike complex cofficients. 
 def PlaneRebuild(surf_a_obj, plane, ZOrder) :
     plane_proc = surf_a_obj.EnlargePixels( surf_a_obj.FillTheGap_everywhere(plane_=plane) )
     zernike_env = ZF.Zernike2d(plane_proc)
@@ -382,10 +382,10 @@ def PlaneRebuild(surf_a_obj, plane, ZOrder) :
 
 
 
-# Funzione che produce il grafico di:
-# - la versione originale della matrice delle medie.
-# - la versione processata della matrice delle medie.
-# - la versione ricostruita secondo Zernike della matrice delle medie.
+# Function that produces the graph of:
+# - the original version of the means matrix.
+# - the processed version of the averages matrix.
+# - the Zernike reconstructed version of the averages matrix.
 def PlotPlaneRebuild(center, Dpp, Rs, ZOrder, pm, pm_p, pm_r, color_map, name) :
     
     if len(color_map) != 1 :
@@ -437,8 +437,8 @@ def PlotPlaneRebuild(center, Dpp, Rs, ZOrder, pm, pm_p, pm_r, color_map, name) :
  
 
         
-# Funzione che trova, in un gruppo di punti, il punto più vicino a un'altro punto P.
-# Verrà usata in GroupNearPoints per trovare il punto della zona di contatto più vicino al centro di massa di tale zona.     
+# Function that finds, in a group of points, the closest point to another point P.
+# Will be used in GroupNearPoints to find the point of the contact zone closest to the center of mass of that zone.     
 def PointNearPoint(points, P) :
     dist_points_P = np.sqrt( (points[:,0]-P[0])**2 + (points[:,1]-P[1])**2 + (points[:,2]-P[2])**2 )
     min_dist = np.amin(dist_points_P)
@@ -448,10 +448,10 @@ def PointNearPoint(points, P) :
 
 
 
-# Funzione che trova la zona di contatto tra due proteine entro una distanza di soglia (Daa).
-# Essa,perognuna delle due proteine restituisce:
-# - l'indice del punto della superficie più vicino al centro di massa di tale zona.
-# - la matrice dei punti nella zona di contatto.
+# Function that finds the contact zone between two proteins within a threshold distance (Daa).
+# It, for each of the two proteins, returns:
+# - the index of the point on the surface closest to the center of mass of that zone.
+# - the matrix of the points in the contact area.
 def GroupNearPoints(Daa, surf_a_obj, surf_b_obj) :
     
     prot_A = surf_a_obj.surface[:,:3]
@@ -475,9 +475,9 @@ def GroupNearPoints(Daa, surf_a_obj, surf_b_obj) :
 
 
 
-# Funzione che genera le medie di due patch con orientazioni opposte (così da essere confrontabili)
-# Ognuna delle due patch appartiene ad una diversa proteina.
-# I relativi piani sono generati con due diversi metodi: CreatePlane_Weights e CreatePlane_Projections.
+# Function that generates the averages of two patches with opposite orientations (so as to be comparable)
+# Each of the two patches belongs to a different protein.
+# Its plans are generated with two different methods: CreatePlane_Weights and CreatePlane_Projections. 
 def PatchesMethods(Npixel, surf_a_obj, c_a, surf_b_obj, c_b, Dpp) :
     
     patch_a, _ = surf_a_obj.BuildPatch(point_pos=c_a, Dmin=Dpp)
@@ -496,9 +496,9 @@ def PatchesMethods(Npixel, surf_a_obj, c_a, surf_b_obj, c_b, Dpp) :
 
 
 
-# Funzione che calcola, in modo più rapido di PlaneRebuild, i coefficienti di Zernike e i loro moduli
-# Per avere i giusti coefficienti il piano deve essere quello processato NON quello originale
-# Il piano processato è quello allagato e senza pixel vuoti 
+# Function that calculates, more quickly than PlaneRebuild, the Zernike coefficients and their modules
+# To have the right coefficients the plan must be the one processed NOT the original one
+# The processed plane is the one that is flooded and without empty pixels 
 def ZernikeCoeff(ZOrder, surf_a_obj, plane) :
     plane_proc = surf_a_obj.EnlargePixels( surf_a_obj.FillTheGap_everywhere(plane_=plane) )
     zernike_env = ZF.Zernike2d(plane_proc)
@@ -509,7 +509,7 @@ def ZernikeCoeff(ZOrder, surf_a_obj, plane) :
 
 
 
-# Funzione che calcola la differenza tra due liste di moduli di coefficienti di Zernike
+# Function that calculates the difference between two lists of Zernikei coefficient modules 
 def ZernikeCoeff_Distance(ZOrder, surf_a_obj, plane_1, surf_b_obj, plane_2) :
     _, _, c_inv_1 = ZernikeCoeff(ZOrder, surf_a_obj, plane_1)
     _, _, c_inv_2 = ZernikeCoeff(ZOrder, surf_b_obj, plane_2)
@@ -519,7 +519,7 @@ def ZernikeCoeff_Distance(ZOrder, surf_a_obj, plane_1, surf_b_obj, plane_2) :
 
 
 
-# Funzione che confronta la media di una patch prodotta con due diversi metodi: CreatePlane_Weights e CreatePlane_Projections.
+# Function that compares the average of a patch produced with two different methods: CreatePlane_Weights and CreatePlane_Projections. 
 def PlotPatchesComparison(obj_name, Npixel, Rs, p_W, p_P, center, Dpp, Daa, color_map, name) :
     
     if obj_name == "" :
@@ -570,7 +570,3 @@ def PlotPatchesComparison(obj_name, Npixel, Rs, p_W, p_P, center, Dpp, Daa, colo
             n = name
         mpl.savefig("{}".format(n))
         print("The figure was generated.")
-
-
-
-
