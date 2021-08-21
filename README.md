@@ -362,7 +362,7 @@ The following function provides the graphs of Figures 3-4. The inputs are:
 * the chosen threshold value.
 * the matrix of the mean.
 * the variance matrix.
-* the color maps to use.
+* the <a href="https://matplotlib.org/stable/tutorials/colors/colormaps.html" target="_blank">color maps</a> to use.
 * the name of the output file with the appropriate extension.
 ```python
 def PlotMeanVariancePatch(center, Dpp, Rs, perc, T, pm, pv, color_maps, name) :
